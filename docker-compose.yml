@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  moodle:
+    image: [DOCKER_USERNAME]/moodle-app:latest
+    environment:
+      - MOODLE_DATABASE_TYPE=pgsql  # PostgreSQL için
+      - MOODLE_DATABASE_HOST=${DATABASE_HOST}
+      - MOODLE_DATABASE_PORT_NUMBER=5432
+      - MOODLE_DATABASE_USER=${DATABASE_USER}
+      - MOODLE_DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - MOODLE_DATABASE_NAME=${DATABASE_NAME}
+    ports:
+      - "8080:8080"
