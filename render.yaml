@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: moodle-app
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DATABASE_HOST
+        value: YOUR_POSTGRES_HOST
+      - key: DATABASE_USER
+        value: YOUR_POSTGRES_USER
+      - key: DATABASE_PASSWORD
+        value: YOUR_POSTGRES_PASSWORD
+      - key: DATABASE_NAME
+        value: moodle
