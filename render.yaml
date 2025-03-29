@@ -1,14 +1,56 @@
 services:
+  # Veritabanı servisi
+  - type: pserv
+    name: moodle-db
+    env: docker
+    plan: free
+    disk:
+      name: moodle-data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 1
+    image: postgres:13-alpine
+    envVars:
+      - key: POSTGRES_USER
+        value: moodle
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+      - key: POSTGRES_DB
+        value: moodle_db
+
+  # Moodle web servisi
   - type: web
     name: moodle-app
     env: docker
+    plan: free
     dockerfilePath: ./Dockerfile
+    disk:
+      name: moodle-files
+      mountPath: /bitnami/moodle
+      sizeGB: 1
     envVars:
-      - key: DATABASE_HOST
-        value: YOUR_POSTGRES_HOST
-      - key: DATABASE_USER
-        value: YOUR_POSTGRES_USER
-      - key: DATABASE_PASSWORD
-        value: YOUR_POSTGRES_PASSWORD
-      - key: DATABASE_NAME
-        value: moodle
+      - key: MOODLE_DATABASE_TYPE
+        value: pgsql
+      - key: MOODLE_DATABASE_HOST
+        fromService:
+          name: moodle-db
+          type: pserv
+          property: host
+      - key: MOODLE_DATABASE_PORT_NUMBER
+        value: 5432
+      - key: MOODLE_DATABASE_USER
+        fromService:
+          name: moodle-db
+          type: pserv
+          envVarKey: POSTGRES_USER
+      - key: MOODLE_DATABASE_PASSWORD
+        fromService:
+          name: moodle-db
+          type: pserv
+          envVarKey: POSTGRES_PASSWORD
+      - key: MOODLE_DATABASE_NAME
+        fromService:
+          name: moodle-db
+          type: pserv
+          envVarKey: POSTGRES_DB
+      - key: AUTO_MIGRATE
+        value: "true"
