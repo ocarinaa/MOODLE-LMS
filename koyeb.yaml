@@ -1,0 +1,12 @@
+service:
+  name: moodle-app
+  type: web
+  runtime: docker
+  ports:
+    - port: 8080
+      http:
+        routes:
+          - path: /
+  resources:
+    cpu: 100m
+    memory: 256Mi
