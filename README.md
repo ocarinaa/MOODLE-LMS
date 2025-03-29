@@ -1,23 +1,16 @@
-# Turfa Learn Moodle
+# Moodle LMS Deployment
 
-Bu repo, Render.com üzerinde Moodle Learning Management System çalıştırmak için gereken dosyaları içerir.
+Moodle öğrenme yönetim sistemi için DockerFile ve dağıtım konfigürasyonu. BigBlueButton ve Safe Exam Browser ile entegre edilmiş bir Moodle kurulumu içerir.
 
-## Özellikler
+## Kullanılan Teknolojiler
 
-- Bitnami Moodle imajı kullanarak hızlı kurulum
-- PostgreSQL veritabanı entegrasyonu
-- BigBlueButton entegrasyonu için hazır yapılandırma
-- Safe Exam Browser desteği
-- Examus entegrasyonu
+- Moodle LMS
+- MariaDB
+- Docker
 
 ## Kurulum
 
-1. Bu repoyu fork'layın
-2. Render.com'da yeni bir "Blueprint" dağıtımı oluşturun
-3. Bu repoyu seçin
-4. Dağıtım tamamlandığında size verilen URL'i ziyaret edin
+Docker ile kurulum için:
 
-## Giriş Bilgileri
-
-- Kullanıcı adı: admin
-- Şifre: Admin@12345
+```bash
+docker-compose up -d
