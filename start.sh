@@ -1,6 +1,4 @@
 #!/bin/bash
-# MariaDB servisini başlat
-service mariadb start
-
-# Moodle başlat
-/opt/bitnami/scripts/moodle/entrypoint.sh /opt/bitnami/scripts/apache/run.sh
+service mysql start
+service apache2 start
+tail -f /var/log/apache2/access.log
