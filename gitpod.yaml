@@ -1,0 +1,26 @@
+tasks:
+  - name: Setup Moodle
+    init: |
+      sudo apt-get update
+      sudo apt-get install -y apache2 mariadb-server php php-mysql php-xml php-curl php-zip php-gd php-mbstring php-xmlrpc php-soap php-intl
+      sudo service apache2 start
+      sudo service mysql start
+      sudo mysql -e "CREATE DATABASE moodle;"
+      sudo mysql -e "CREATE USER 'moodle'@'localhost' IDENTIFIED BY 'password';"
+      sudo mysql -e "GRANT ALL ON moodle.* TO 'moodle'@'localhost';"
+      cd /workspace
+      wget https://download.moodle.org/download.php/direct/stable401/moodle-latest-401.zip
+      unzip moodle-latest-401.zip
+      sudo rm -f /var/www/html/index.html
+      sudo cp -r moodle/* /var/www/html/
+      sudo mkdir -p /var/moodledata
+      sudo chmod 777 /var/moodledata
+      sudo chown -R www-data:www-data /var/www/html/ /var/moodledata
+    command: |
+      sudo service apache2 start
+      sudo service mysql start
+      echo "Moodle is running at: $(gp url 80)"
+
+ports:
+  - port: 80
+    onOpen: open-preview
