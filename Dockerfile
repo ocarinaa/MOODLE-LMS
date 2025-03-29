@@ -1,30 +1,53 @@
-FROM bitnami/moodle:latest
+FROM mattrayner/lamp:latest-1804
 
-# Gerekli paketleri yükle
-RUN apt-get update && apt-get install -y mariadb-server
+# Moodle'ı indir ve kur
+RUN apt-get update && apt-get install -y wget unzip
+WORKDIR /var/www/html
+RUN wget https://download.moodle.org/download.php/direct/stable401/moodle-latest-401.zip && \
+    unzip moodle-latest-401.zip && \
+    rm moodle-latest-401.zip && \
+    chown -R www-data:www-data /var/www/html/moodle && \
+    chmod -R 755 /var/www/html/moodle
 
-# MariaDB servisini başlat ve Moodle veritabanını oluştur
-RUN service mariadb start && \
-    mysql -e "CREATE DATABASE moodle_db;" && \
-    mysql -e "CREATE USER 'moodle_user'@'localhost' IDENTIFIED BY 'moodle_password';" && \
-    mysql -e "GRANT ALL PRIVILEGES ON moodle_db.* TO 'moodle_user'@'localhost';" && \
-    mysql -e "FLUSH PRIVILEGES;"
+# Moodle veri dizini oluştur
+RUN mkdir -p /var/www/moodledata && \
+    chown -R www-data:www-data /var/www/moodledata && \
+    chmod 777 /var/www/moodledata
 
-# Moodle çevre değişkenlerini ayarla
-ENV MOODLE_DATABASE_TYPE=mariadb
-ENV MOODLE_DATABASE_HOST=127.0.0.1
-ENV MOODLE_DATABASE_PORT_NUMBER=3306
-ENV MOODLE_DATABASE_NAME=moodle_db
-ENV MOODLE_DATABASE_USER=moodle_user
-ENV MOODLE_DATABASE_PASSWORD=moodle_password
-ENV MOODLE_USERNAME=admin
-ENV MOODLE_PASSWORD=Admin@12345
-ENV MOODLE_EMAIL=admin@example.com
-ENV MOODLE_SITE_NAME="Turfa Learn"
+# Veritabanı oluştur
+RUN service mysql start && \
+    mysql -u root -e "CREATE DATABASE moodle DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" && \
+    mysql -u root -e "CREATE USER 'moodle'@'localhost' IDENTIFIED BY 'moodle_password';" && \
+    mysql -u root -e "GRANT ALL ON moodle.* TO 'moodle'@'localhost';" && \
+    mysql -u root -e "FLUSH PRIVILEGES;"
+
+# config.php oluştur
+RUN echo "<?php \n\
+\$CFG = new stdClass(); \n\
+\$CFG->dbtype    = 'mysqli'; \n\
+\$CFG->dblibrary = 'native'; \n\
+\$CFG->dbhost    = 'localhost'; \n\
+\$CFG->dbname    = 'moodle'; \n\
+\$CFG->dbuser    = 'moodle'; \n\
+\$CFG->dbpass    = 'moodle_password'; \n\
+\$CFG->prefix    = 'mdl_'; \n\
+\$CFG->dboptions = array( \n\
+    'dbpersist' => false, \n\
+    'dbsocket'  => false, \n\
+); \n\
+\$CFG->wwwroot   = 'https://\$_SERVER[\"HTTP_HOST\"]'; \n\
+\$CFG->dataroot  = '/var/www/moodledata'; \n\
+\$CFG->directorypermissions = 0777; \n\
+\$CFG->admin = 'admin'; \n\
+require_once(__DIR__ . '/lib/setup.php'); \n\
+" > /var/www/html/moodle/config.php
 
 # Başlangıç betiği
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
+
+# Port yapılandırması
+EXPOSE 80
 
 # Çalıştırma komutu
 CMD ["/start.sh"]
