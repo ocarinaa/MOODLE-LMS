@@ -1,22 +1,14 @@
 FROM bitnami/moodle:latest
 
-# Render.com için gerekli ayarlamalar
+# Render.com için çevre değişkenleri
 ENV PORT=8080
 ENV RENDER=true
 
-# Veritabanı ayarlarını environment değişkenlerinden al
-ENV MOODLE_DATABASE_TYPE=pgsql
-ENV MOODLE_DATABASE_HOST=$DATABASE_HOST
-ENV MOODLE_DATABASE_PORT_NUMBER=5432
-ENV MOODLE_DATABASE_USER=$DATABASE_USER
-ENV MOODLE_DATABASE_PASSWORD=$DATABASE_PASSWORD
-ENV MOODLE_DATABASE_NAME=$DATABASE_NAME
-
-# Moodle admin bilgileri
+# Moodle admin kullanıcı ayarları
 ENV MOODLE_USERNAME=admin
-ENV MOODLE_PASSWORD=password
+ENV MOODLE_PASSWORD=Admin@12345
 ENV MOODLE_EMAIL=admin@example.com
-ENV MOODLE_SITE_NAME="My Moodle Site"
+ENV MOODLE_SITE_NAME="Turfa Learn"
 
 # Çalıştırma komutu
-CMD ["/opt/bitnami/scripts/moodle/entrypoint.sh", "/opt/bitnami/scripts/apache/run.sh"]
+CMD ["bash", "-c", "/opt/bitnami/scripts/moodle/entrypoint.sh /opt/bitnami/scripts/apache/run.sh"]
