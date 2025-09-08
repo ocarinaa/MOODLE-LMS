@@ -100,8 +100,8 @@ TurfaLearn, eğitim kurumları için özel olarak tasarlanmış, **Moodle LMS** 
 
 ```bash
 # 1. Repoyu klonlayın
-git clone https://github.com/umur957/moodle-render.git
-cd moodle-render
+[git clone https://github.com/umur957/moodle-render.git](https://github.com/umur957/turfalearn-lms)
+cd turfalearn-lms
 
 # 2. Servisleri başlatın
 docker-compose up -d
