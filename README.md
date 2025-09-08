@@ -102,12 +102,22 @@ Moodle LMS is a comprehensive learning management system solution specially desi
 git clone https://github.com/umur957/moodle-lms.git
 cd moodle-lms
 
-# 2. Start the services
+# 2. Start the services (First run takes 5-10 minutes)
 docker-compose up -d
 
-# 3. Access when installation is complete
+# 3. Wait for initialization to complete
+docker-compose logs -f moodle
+# Wait until you see "Apache started" in logs
+
+# 4. Access Moodle
 echo "🌐 Moodle LMS ready: http://localhost:8080"
 ```
+
+⚠️ **Important Notes:**
+- **First initialization takes 5-10 minutes** - Moodle sets up the database
+- Database uses **no password** for development (change for production!)
+- Moodle data is **persisted in Docker volumes**
+- If port 8080 is busy, change it in `docker-compose.yml`
 
 ### 🔐 **Initial Access Credentials**
 
@@ -130,15 +140,35 @@ echo "🌐 Moodle LMS ready: http://localhost:8080"
 ### 🌍 **Environment Variables**
 
 ```yaml
-# Important settings in docker-compose.yml
+# Development configuration (current)
 environment:
   - MOODLE_SITE_NAME=Moodle LMS          # Site name
   - MOODLE_USERNAME=admin                 # Admin username
   - MOODLE_PASSWORD=Admin@12345          # Admin password (change it!)
   - MOODLE_EMAIL=admin@example.com       # Admin email
-  - MARIADB_PASSWORD=bitnami123          # DB password (change it!)
+  - ALLOW_EMPTY_PASSWORD=yes             # No DB password (dev only!)
   - MOODLE_SKIP_BOOTSTRAP=no             # Initial setup
 ```
+
+## 🔒 **Production Security**
+
+⚠️ **For production deployment, please:**
+
+1. **Remove password-less database access:**
+   ```yaml
+   # Remove this line:
+   - ALLOW_EMPTY_PASSWORD=yes
+   
+   # Add secure passwords:
+   - MARIADB_ROOT_PASSWORD=your_strong_root_password
+   - MARIADB_PASSWORD=your_strong_db_password
+   - MOODLE_DATABASE_PASSWORD=your_strong_db_password
+   ```
+
+2. **Set strong admin password**
+3. **Configure SSL/HTTPS certificates**
+4. **Setup firewall rules**
+5. **Use environment variables file (`.env`)**
 
 ### 🌐 **Port Configuration**
 
