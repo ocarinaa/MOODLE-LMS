@@ -1,31 +1,31 @@
-# 🔗 TurfaLearn Entegrasyonlar Rehberi
+# 🔗 Moodle LMS Integrations Guide
 
-TurfaLearn sisteminin harici sistemlerle entegrasyonu için detaylı konfigürasyon ve kullanım rehberi.
+Detailed configuration and usage guide for integrating the Moodle LMS system with external systems.
 
-## 📋 İçindekiler
+## 📋 Table of Contents
 
-1. [BigBlueButton Entegrasyonu](#bigbluebutton-entegrasyonu)
-2. [Examus Gözetim Sistemi](#examus-gözetim-sistemi)
+1. [BigBlueButton Integration](#bigbluebutton-integration)
+2. [Examus Proctoring System](#examus-proctoring-system)
 3. [Safe Exam Browser](#safe-exam-browser)
-4. [Odoo ERP Entegrasyonu](#odoo-erp-entegrasyonu)
+4. [Odoo ERP Integration](#odoo-erp-integration)
 5. [LDAP/Active Directory](#ldap-active-directory)
 6. [Single Sign-On (SSO)](#single-sign-on-sso)
-7. [API Entegrasyonları](#api-entegrasyonları)
-8. [Webhook Konfigürasyonları](#webhook-konfigürasyonları)
+7. [API Integrations](#api-integrations)
+8. [Webhook Configurations](#webhook-configurations)
 
 ---
 
-## 📹 BigBlueButton Entegrasyonu
+## 📹 BigBlueButton Integration
 
-### Kurulum ve Konfigürasyon
+### Installation and Configuration
 
-#### 1. BigBlueButton Sunucu Kurulumu
+#### 1. BigBlueButton Server Installation
 
 ```bash
-# Ubuntu 20.04 üzerinde BigBlueButton kurulumu
-wget -qO- https://ubuntu.bigbluebutton.org/bbb-install.sh | bash -s -- -w -a -v focal-260 -s your-bbb-domain.com -e info@tuerfa.de
+# BigBlueButton installation on Ubuntu 20.04
+wget -qO- https://ubuntu.bigbluebutton.org/bbb-install.sh | bash -s -- -w -a -v focal-260 -s your-bbb-domain.com -e info@example.com
 
-# Firewall portlarını aç
+# Open firewall ports
 ufw allow 80/tcp
 ufw allow 443/tcp
 ufw allow 1935/tcp
@@ -33,41 +33,41 @@ ufw allow 7443/tcp
 ufw allow 16384:32768/udp
 ```
 
-#### 2. Moodle BigBlueButton Plugin Kurulumu
+#### 2. Moodle BigBlueButton Plugin Installation
 
 ```bash
-# Moodle container'a gir
-docker exec -it turfalearn-moodle bash
+# Enter Moodle container
+docker exec -it moodle-lms-moodle bash
 
-# Plugin dizinine git
+# Go to plugin directory
 cd /opt/bitnami/moodle/mod
 
-# BigBlueButton plugin'ini indir
+# Download BigBlueButton plugin
 wget https://github.com/blindsidenetworks/moodle-mod_bigbluebuttonbn/archive/refs/heads/master.zip
 unzip master.zip
 mv moodle-mod_bigbluebuttonbn-master bigbluebuttonbn
 
-# Sahiplik ayarla
+# Set ownership
 chown -R bitnami:bitnami bigbluebuttonbn
 
 exit
 ```
 
-#### 3. Plugin Konfigürasyonu
+#### 3. Plugin Configuration
 
 ```php
-// config/moodle/config.php'ye ekle
+// Add to config/moodle/config.php
 $CFG->bigbluebuttonbn_server_url = getenv('BBB_SERVER_URL') ?: 'https://your-bbb-server.com/bigbluebutton/api/';
 $CFG->bigbluebuttonbn_shared_secret = getenv('BBB_SHARED_SECRET') ?: 'your_shared_secret';
 
-// BigBlueButton özel ayarları
+// BigBlueButton custom settings
 $CFG->bigbluebuttonbn_voicebridge_editable = true;
 $CFG->bigbluebuttonbn_importrecordings_enabled = true;
 $CFG->bigbluebuttonbn_meetingevents_enabled = true;
 $CFG->bigbluebuttonbn_recordingready_enabled = true;
 $CFG->bigbluebuttonbn_recordingstatus_enabled = true;
 
-// Güvenlik ayarları
+// Security settings
 $CFG->bigbluebuttonbn_moderator_default = 'owner';
 $CFG->bigbluebuttonbn_voicebridge_editable = false;
 ```
@@ -75,7 +75,7 @@ $CFG->bigbluebuttonbn_voicebridge_editable = false;
 #### 4. Environment Variables
 
 ```bash
-# .env dosyasına BigBlueButton ayarları
+# Add BigBlueButton settings to .env file
 cat >> .env << 'EOF'
 
 # BigBlueButton Configuration
@@ -91,7 +91,7 @@ BBB_MUTE_ON_START=true
 EOF
 ```
 
-#### 5. Webhook Konfigürasyonu
+#### 5. Webhook Configuration
 
 ```php
 <?php
@@ -116,17 +116,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         switch ($data['event']) {
             case 'meeting-ended':
-                // Toplantı bittiğinde yapılacaklar
+                // Actions when meeting ends
                 handle_meeting_ended($data);
                 break;
                 
             case 'recording-ready':
-                // Kayıt hazır olduğunda yapılacaklar
+                // Actions when recording is ready
                 handle_recording_ready($data);
                 break;
                 
             case 'user-joined':
-                // Kullanıcı katıldığında yapılacaklar
+                // Actions when user joins
                 handle_user_joined($data);
                 break;
         }
@@ -145,14 +145,14 @@ function handle_meeting_ended($data) {
     $meeting_id = $data['meeting_id'];
     $duration = $data['duration'];
     
-    // Veritabanında toplantı bilgilerini güncelle
+    // Update meeting information in database
     $record = $DB->get_record('bigbluebuttonbn', ['meetingid' => $meeting_id]);
     if ($record) {
         $record->timemodified = time();
         $record->duration = $duration;
         $DB->update_record('bigbluebuttonbn', $record);
         
-        // Email bildirim gönder
+        // Send meeting summary email
         send_meeting_summary_email($record);
     }
 }
@@ -163,27 +163,27 @@ function handle_recording_ready($data) {
     $meeting_id = $data['meeting_id'];
     $recording_url = $data['recording_url'];
     
-    // Kayıt URL'sini veritabanında güncelle
+    // Update recording URL in database
     $record = $DB->get_record('bigbluebuttonbn', ['meetingid' => $meeting_id]);
     if ($record) {
         $record->recordings = json_encode(['url' => $recording_url, 'ready' => true]);
         $DB->update_record('bigbluebuttonbn', $record);
         
-        // Katılımcılara kayıt hazır bildirimi gönder
+        // Notify participants recording is ready
         notify_recording_ready($record, $recording_url);
     }
 }
 ?>
 ```
 
-#### 6. Özel BBB Ayarları
+#### 6. Custom BBB Settings
 
 ```javascript
 // mod/bigbluebuttonbn/js/custom_bbb.js
 
-// Toplantı başlatmadan önce özel ayarlar
+// Custom settings before starting meeting
 window.addEventListener('beforeunload', function(e) {
-    // Toplantı verilerini kaydet
+    // Save meeting data
     saveMeetingData();
 });
 
@@ -203,7 +203,7 @@ function saveMeetingData() {
     });
 }
 
-// BigBlueButton iframe için özel CSS
+// Custom CSS for BigBlueButton iframe
 function customizeBBBInterface() {
     const iframe = document.querySelector('#bigbluebutton-iframe');
     if (iframe) {
@@ -213,7 +213,7 @@ function customizeBBBInterface() {
                 const style = iframeDoc.createElement('style');
                 style.textContent = `
                     .branding { display: none !important; }
-                    .navbar-brand img { content: url('/theme/turfalearn/pix/logo.png') !important; }
+                    .navbar-brand img { content: url('/theme/moodlelms/pix/logo.png') !important; }
                     .navbar { background-color: #FF6600 !important; }
                 `;
                 iframeDoc.head.appendChild(style);
@@ -224,21 +224,21 @@ function customizeBBBInterface() {
     }
 }
 
-// Sayfa yüklendiğinde çalıştır
+// Run when page loads
 document.addEventListener('DOMContentLoaded', customizeBBBInterface);
 ```
 
 ---
 
-## 🔍 Examus Gözetim Sistemi
+## 🔍 Examus Proctoring System
 
-### Kurulum ve Konfigürasyon
+### Installation and Configuration
 
-#### 1. Examus Plugin Kurulumu
+#### 1. Examus Plugin Installation
 
 ```bash
-# Moodle container'a gir
-docker exec -it turfalearn-moodle bash
+# Enter Moodle container
+docker exec -it moodle-lms-moodle bash
 
 # Examus availability condition plugin
 cd /opt/bitnami/moodle/availability/condition
@@ -248,29 +248,29 @@ git clone https://github.com/examus/moodle-availability_examus.git examus
 cd /opt/bitnami/moodle/local
 git clone https://github.com/examus/moodle-local_oauth.git oauth
 
-# Sahiplik ayarla
+# Set ownership
 chown -R bitnami:bitnami /opt/bitnami/moodle/availability/condition/examus
 chown -R bitnami:bitnami /opt/bitnami/moodle/local/oauth
 
 exit
 ```
 
-#### 2. Web Service Konfigürasyonu
+#### 2. Web Service Configuration
 
 ```bash
-# Web servisleri etkinleştir
-docker exec turfalearn-moodle php /opt/bitnami/moodle/admin/cli/cfg.php --name=enablewebservices --set=1
+# Enable web services
+docker exec moodle-lms-moodle php /opt/bitnami/moodle/admin/cli/cfg.php --name=enablewebservices --set=1
 
-# REST protokolünü etkinleştir
-docker exec turfalearn-moodle php /opt/bitnami/moodle/admin/cli/cfg.php --name=webserviceprotocols --set=rest
+# Enable REST protocol
+docker exec moodle-lms-moodle php /opt/bitnami/moodle/admin/cli/cfg.php --name=webserviceprotocols --set=rest
 
-# Examus için özel web servisi oluştur
+# Create custom web service for Examus
 cat > /tmp/create_examus_service.php << 'EOF'
 <?php
 require_once('/opt/bitnami/moodle/config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
-// Web service oluştur
+// Create web service
 $webservice = new stdClass();
 $webservice->name = 'Examus';
 $webservice->enabled = 1;
@@ -283,7 +283,7 @@ $webservice->uploadfiles = 0;
 
 $serviceid = $DB->insert_record('external_services', $webservice);
 
-// Gerekli fonksiyonları ekle
+// Add required functions
 $functions = [
     'core_user_get_users',
     'core_course_get_courses',
@@ -308,23 +308,23 @@ echo "Examus web service created with ID: $serviceid\n";
 ?>
 EOF
 
-# Scripti çalıştır
-docker exec turfalearn-moodle php /tmp/create_examus_service.php
+# Run the script
+docker exec moodle-lms-moodle php /tmp/create_examus_service.php
 ```
 
-#### 3. Token Oluşturma
+#### 3. Token Creation
 
 ```bash
-# Examus kullanıcısı oluştur
-docker exec turfalearn-moodle php /opt/bitnami/moodle/admin/cli/create_user.php \
+# Create Examus user
+docker exec moodle-lms-moodle php /opt/bitnami/moodle/admin/cli/create_user.php \
     --username=examus \
     --password=ExamusSecure2025! \
-    --email=examus@tuerfa.de \
+    --email=examus@example.com \
     --firstname=Examus \
     --lastname=Service
 
-# Token oluştur
-docker exec turfalearn-moodle php -r "
+# Create token
+docker exec moodle-lms-moodle php -r "
 require_once('/opt/bitnami/moodle/config.php');
 
 \$user = \$DB->get_record('user', ['username' => 'examus']);
@@ -347,16 +347,16 @@ echo \"Token created: \" . \$token->token . \"\n\";
 "
 ```
 
-#### 4. Examus Konfigürasyonu
+#### 4. Examus Configuration
 
 ```php
-// config/moodle/config.php'ye ekle
+// Add to config/moodle/config.php
 $CFG->examus_app_url = 'https://your-domain.com/webservice/rest/server.php';
 $CFG->examus_token = 'generated_token_from_above';
 $CFG->examus_client_id = 'moodle_client_id';
 $CFG->examus_client_secret = 'moodle_client_secret';
 
-// Examus güvenlik ayarları
+// Examus security settings
 $CFG->examus_identification_mode = 'strict'; // strict, normal, disabled
 $CFG->examus_enable_screenshot = true;
 $CFG->examus_enable_webcam = true;
@@ -364,7 +364,7 @@ $CFG->examus_enable_desktop_recording = true;
 $CFG->examus_enable_chat_detection = true;
 ```
 
-#### 5. Examus Sınav Konfigürasyonu
+#### 5. Examus Exam Configuration
 
 ```php
 <?php
@@ -381,12 +381,12 @@ class condition extends \core_availability\condition {
     public function is_available($not, info $info, $grabthelot, $userid) {
         global $USER, $CFG;
         
-        // Examus uygulaması kontrol edilip edilmeyeceği
+        // Check if Examus application is being monitored
         if (!$this->is_examus_app_active($userid)) {
             return false;
         }
         
-        // Kimlik doğrulama kontrolü
+        // Identity verification check
         if (!$this->verify_user_identity($userid)) {
             return false;
         }
@@ -395,7 +395,7 @@ class condition extends \core_availability\condition {
     }
     
     protected function is_examus_app_active($userid) {
-        // Examus uygulamasının aktif olup olmadığını kontrol et
+        // Check if Examus application is active
         $api_url = $CFG->examus_app_url;
         $token = $CFG->examus_token;
         
@@ -411,7 +411,7 @@ class condition extends \core_availability\condition {
     }
     
     protected function verify_user_identity($userid) {
-        // Kimlik doğrulama işlemi
+        // Identity verification process
         return $this->examusconfig['require_identity_verification'] ?? true;
     }
     
@@ -436,13 +436,13 @@ class condition extends \core_availability\condition {
 
 ## 🛡️ Safe Exam Browser
 
-### Kurulum ve Konfigürasyon
+### Installation and Configuration
 
-#### 1. SEB Plugin Kurulumu
+#### 1. SEB Plugin Installation
 
 ```bash
-# Safe Exam Browser plugin'ini indir
-docker exec turfalearn-moodle bash -c "
+# Download Safe Exam Browser plugin
+docker exec moodle-lms-moodle bash -c "
 cd /opt/bitnami/moodle/mod
 wget https://github.com/SafeExamBrowser/seb-moodle/archive/refs/heads/master.zip -O seb.zip
 unzip seb.zip
@@ -452,7 +452,7 @@ rm seb.zip
 "
 ```
 
-#### 2. SEB Konfigürasyon Dosyası
+#### 2. SEB Configuration File
 
 ```json
 {
@@ -528,10 +528,10 @@ rm seb.zip
 }
 ```
 
-#### 3. Moodle SEB Ayarları
+#### 3. Moodle SEB Settings
 
 ```php
-// config/moodle/config.php'ye SEB ayarları
+// Add SEB settings to config/moodle/config.php
 $CFG->seb_enabled = true;
 $CFG->seb_requiresafeexambrowser = true;
 $CFG->seb_showsebtaskbar = false;
@@ -543,7 +543,7 @@ $CFG->seb_quitlink = 'https://your-domain.com/course/';
 $CFG->seb_linkquitseb = 'https://your-domain.com/';
 ```
 
-#### 4. Quiz SEB Entegrasyonu
+#### 4. Quiz SEB Integration
 
 ```php
 <?php
@@ -559,7 +559,7 @@ class seb_quiz_settings {
             return null;
         }
         
-        // SEB konfigürasyonu oluştur
+        // Create SEB configuration
         $seb_config = [
             'sebConfigPurpose' => 2,
             'startURL' => self::get_quiz_url($quiz),
@@ -608,12 +608,12 @@ class seb_quiz_settings {
         $headers = getallheaders();
         $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
         
-        // SEB user agent kontrolü
+        // SEB user agent check
         if (strpos($user_agent, 'SEB/') === false) {
             return false;
         }
         
-        // SEB config key kontrolü
+        // SEB config key check
         $config_key = $headers['X-SafeExamBrowser-ConfigKeyHash'] ?? '';
         $expected_key = self::calculate_config_key($quizid);
         
@@ -630,19 +630,19 @@ class seb_quiz_settings {
 
 ---
 
-## 🏢 Odoo ERP Entegrasyonu
+## 🏢 Odoo ERP Integration
 
-### Moodle Tarafı Konfigürasyon
+### Moodle Side Configuration
 
-#### 1. Web Service Kurulumu
+#### 1. Web Service Setup
 
 ```bash
-# Odoo için web servisi oluştur
+# Create web service for Odoo
 cat > /tmp/create_odoo_service.php << 'EOF'
 <?php
 require_once('/opt/bitnami/moodle/config.php');
 
-// Web service oluştur
+// Create web service
 $webservice = new stdClass();
 $webservice->name = 'Odoo Integration';
 $webservice->enabled = 1;
@@ -654,7 +654,7 @@ $webservice->timemodified = time();
 
 $serviceid = $DB->insert_record('external_services', $webservice);
 
-// Fonksiyonları ekle
+// Add functions
 $functions = [
     'core_user_get_users',
     'core_user_create_users',
@@ -677,7 +677,7 @@ foreach ($functions as $functionname) {
     }
 }
 
-// Token oluştur
+// Create token
 $user = $DB->get_record('user', ['username' => 'admin']);
 $token = new stdClass();
 $token->token = 'odoo_' . md5(uniqid(rand(), true));
@@ -694,7 +694,7 @@ echo "Odoo web service token: " . $token->token . "\n";
 ?>
 EOF
 
-docker exec turfalearn-moodle php /tmp/create_odoo_service.php
+docker exec moodle-lms-moodle php /tmp/create_odoo_service.php
 ```
 
 #### 2. Custom API Endpoints
@@ -706,7 +706,7 @@ docker exec turfalearn-moodle php /tmp/create_odoo_service.php
 class local_odoo_integration_external extends external_api {
     
     /**
-     * Kullanıcı senkronizasyonu
+     * User synchronization
      */
     public static function sync_users($users) {
         global $DB, $CFG;
@@ -717,14 +717,14 @@ class local_odoo_integration_external extends external_api {
                 $user = $DB->get_record('user', ['email' => $userdata['email']]);
                 
                 if ($user) {
-                    // Mevcut kullanıcıyı güncelle
+                    // Update existing user
                     $user->firstname = $userdata['firstname'];
                     $user->lastname = $userdata['lastname'];
                     $user->timemodified = time();
                     $DB->update_record('user', $user);
                     $results[] = ['email' => $userdata['email'], 'status' => 'updated'];
                 } else {
-                    // Yeni kullanıcı oluştur
+                    // Create new user
                     $user = new stdClass();
                     $user->username = $userdata['username'];
                     $user->password = hash_internal_user_password($userdata['password']);
@@ -748,7 +748,7 @@ class local_odoo_integration_external extends external_api {
     }
     
     /**
-     * Kurs enrollment senkronizasyonu
+     * Course enrollment synchronization
      */
     public static function sync_enrollments($enrollments) {
         global $DB;
@@ -769,7 +769,7 @@ class local_odoo_integration_external extends external_api {
                     continue;
                 }
                 
-                // Enrollment işlemi
+                // Enrollment process
                 $enrol_manual = $DB->get_record('enrol', [
                     'courseid' => $course->id,
                     'enrol' => 'manual'
@@ -800,7 +800,7 @@ class local_odoo_integration_external extends external_api {
     }
     
     /**
-     * Notları Odoo'ya gönder
+     * Export grades to Odoo
      */
     public static function export_grades($course_id, $user_ids = []) {
         global $DB, $CFG;
@@ -814,7 +814,7 @@ class local_odoo_integration_external extends external_api {
             return ['error' => 'Course not found'];
         }
         
-        // Kullanıcı listesi
+        // User list
         if (empty($user_ids)) {
             $enrolled_users = get_enrolled_users(context_course::instance($course_id));
             $user_ids = array_keys($enrolled_users);
@@ -852,9 +852,9 @@ class local_odoo_integration_external extends external_api {
 ?>
 ```
 
-### Odoo Tarafı Konfigürasyon
+### Odoo Side Configuration
 
-#### 1. Moodle Connector Modülü
+#### 1. Moodle Connector Module
 
 ```python
 # addons/moodle_connector/models/moodle_config.py
@@ -994,7 +994,7 @@ class MoodleWebhook(http.Controller):
     def handle_webhook(self, **kwargs):
         """Handle webhooks from Moodle"""
         
-        # Webhook doğrulama
+        # Webhook verification
         signature = request.httprequest.headers.get('X-Moodle-Signature', '')
         body = request.httprequest.get_data()
         
@@ -1025,17 +1025,17 @@ class MoodleWebhook(http.Controller):
     
     def _handle_enrollment(self, data):
         """Handle user enrollment event"""
-        # Enrollment işlemlerini Odoo'da kaydet
+        # Process enrollment operations in Odoo
         return {'status': 'enrollment_processed'}
     
     def _handle_grade_update(self, data):
         """Handle grade update event"""
-        # Not güncellemelerini Odoo'da işle
+        # Process grade updates in Odoo
         return {'status': 'grade_processed'}
     
     def _handle_course_completion(self, data):
         """Handle course completion event"""
-        # Kurs tamamlama durumunu Odoo'da kaydet
+        # Record course completion status in Odoo
         return {'status': 'completion_processed'}
 ```
 
@@ -1043,10 +1043,10 @@ class MoodleWebhook(http.Controller):
 
 ## 🔐 LDAP/Active Directory
 
-### LDAP Konfigürasyonu
+### LDAP Configuration
 
 ```php
-// config/moodle/config.php'ye LDAP ayarları
+// Add LDAP settings to config/moodle/config.php
 
 // LDAP authentication plugin
 $CFG->auth_ldap_host_url = 'ldaps://your-dc.domain.com:636';
@@ -1083,11 +1083,11 @@ $CFG->auth_ldap_ldap_encoding = 'utf-8';
 
 ## 🎫 Single Sign-On (SSO)
 
-### SAML2 SSO Konfigürasyonu
+### SAML2 SSO Configuration
 
 ```bash
-# SAML2 auth plugin kur
-docker exec turfalearn-moodle bash -c "
+# Install SAML2 auth plugin
+docker exec moodle-lms-moodle bash -c "
 cd /opt/bitnami/moodle/auth
 git clone https://github.com/catalyst/moodle-auth_saml2.git saml2
 chown -R bitnami:bitnami saml2
@@ -1095,7 +1095,7 @@ chown -R bitnami:bitnami saml2
 ```
 
 ```php
-// SAML2 ayarları
+// SAML2 settings
 $CFG->auth_saml2_idpname = 'Corporate SSO';
 $CFG->auth_saml2_entityid = 'https://your-domain.com/auth/saml2/sp/metadata.php';
 $CFG->auth_saml2_sso_url = 'https://your-sso-provider.com/saml2/sso';
@@ -1110,7 +1110,7 @@ $CFG->auth_saml2_field_map_email = 'http://schemas.xmlsoap.org/ws/2005/05/identi
 
 ---
 
-## 🌐 API Entegrasyonları
+## 🌐 API Integrations
 
 ### REST API Client
 
@@ -1148,7 +1148,7 @@ class MoodleAPIClient {
         }
     }
     
-    // Kullanıcı işlemleri
+    // User operations
     async getUsers(criteria = []) {
         return await this.makeRequest('core_user_get_users', { 
             criteria: JSON.stringify(criteria) 
@@ -1161,7 +1161,7 @@ class MoodleAPIClient {
         });
     }
     
-    // Kurs işlemleri
+    // Course operations
     async getCourses() {
         return await this.makeRequest('core_course_get_courses');
     }
@@ -1170,7 +1170,7 @@ class MoodleAPIClient {
         return await this.makeRequest('core_course_get_contents', { courseid });
     }
     
-    // Not işlemleri
+    // Grade operations
     async getGrades(courseid, userid) {
         return await this.makeRequest('gradereport_user_get_grade_items', {
             courseid, userid
@@ -1178,13 +1178,13 @@ class MoodleAPIClient {
     }
 }
 
-// Kullanım örneği
+// Usage example
 const moodleAPI = new MoodleAPIClient(
     'https://your-domain.com', 
     'your_api_token'
 );
 
-// Async/await kullanım
+// Async/await usage
 async function syncUserData() {
     try {
         const users = await moodleAPI.getUsers([
@@ -1199,7 +1199,7 @@ async function syncUserData() {
 
 ---
 
-## 🔗 Webhook Konfigürasyonları
+## 🔗 Webhook Configurations
 
 ### Generic Webhook Handler
 
@@ -1277,7 +1277,7 @@ class WebhookHandler {
                 error_log("Unknown webhook event: $event_type");
         }
         
-        // Webhook logunu kaydet
+        // Log webhook
         $log = new stdClass();
         $log->event_type = $event_type;
         $log->payload = json_encode($data);
@@ -1286,22 +1286,22 @@ class WebhookHandler {
     }
     
     private function handle_user_created($data) {
-        // Kullanıcı oluşturma işlemlerini handle et
+        // Handle user creation operations
         error_log("User created: " . $data['user']['email']);
     }
     
     private function handle_course_enrolled($data) {
-        // Kurs kaydı işlemlerini handle et
+        // Handle course enrollment operations
         error_log("User enrolled: " . $data['user_id'] . " in course " . $data['course_id']);
     }
     
     private function handle_grade_updated($data) {
-        // Not güncellemesi işlemlerini handle et
+        // Handle grade update operations
         error_log("Grade updated for user: " . $data['user_id']);
     }
 }
 
-// Webhook handler'ı başlat
+// Start webhook handler
 $webhook_secret = $CFG->webhook_secret ?? 'default_secret';
 $handler = new WebhookHandler($webhook_secret);
 $handler->handle();
@@ -1310,17 +1310,13 @@ $handler->handle();
 
 ---
 
-## 📞 Destek
+## 📞 Support
 
-Entegrasyon konularında destek için:
+For support with integrations:
 
-- 🐛 **GitHub Issues**: [Issues sayfası](https://github.com/umur957/moodle-render/issues)
-- 📧 **Email**: info@tuerfa.de
-- 📱 **Telefon**: +90 0533 924 3850
-- 📚 **Dokümantasyon**: [docs/](../README.md)
+- 🐛 **GitHub Issues**: [Issues page](https://github.com/umur957/moodle-lms/issues)
+- 📚 **Documentation**: [docs/](../README.md)
 
 ---
 
-*Bu entegrasyonlar rehberi sürekli güncellenmektedir. Yeni entegrasyon önerilerinizi GitHub Issues üzerinden paylaşabilirsiniz.*
-
-*© 2025 Turfa GbR. Tüm hakları saklıdır.*
+*This integrations guide is continuously updated. You can share your new integration suggestions through GitHub Issues.*

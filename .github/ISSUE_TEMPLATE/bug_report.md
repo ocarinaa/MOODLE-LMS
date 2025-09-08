@@ -1,33 +1,33 @@
 ---
 name: 🐛 Bug Report
-about: Hata bildirmek için bu template'i kullanın
+about: Use this template to report a bug
 title: '[BUG] '
 labels: 'bug'
-assignees: 'umur957'
+assignees: ''
 
 ---
 
-## 🐛 Bug Açıklaması
-Hatanın kısa ve net açıklaması
+## 🐛 Bug Description
+Brief and clear description of the bug
 
-## 🔄 Reproduksiyon Adımları
-Hatayı nasıl reproduce edebiliriz:
-1. Şu sayfaya gidin '...'
-2. Şuna tıklayın '....'
-3. Aşağı kaydırın '....'
-4. Hatayı görün
+## 🔄 Reproduction Steps
+How can we reproduce the bug:
+1. Go to page '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See the error
 
-## ✅ Beklenen Davranış
-Ne olması gerektiğinin net açıklaması
+## ✅ Expected Behavior
+Clear description of what should happen
 
 ## 📸 Screenshots
-Varsa ekran görüntüleri ekleyin
+Add screenshots if available
 
-## 🖥️ Ortam Bilgileri
+## 🖥️ Environment Information
  - OS: [e.g. Ubuntu 20.04, Windows 11]
  - Browser: [e.g. Chrome 96, Firefox 95]
  - Docker Version: [e.g. 20.10.12]
- - TurfaLearn Version: [e.g. 2.1.0]
+ - Moodle LMS Version: [e.g. 2.1.0]
 
-## 📋 Ek Bilgiler
-Herhangi bir ek bilgi veya detay
+## 📋 Additional Information
+Any additional information or details

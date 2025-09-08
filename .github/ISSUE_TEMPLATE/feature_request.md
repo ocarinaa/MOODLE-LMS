@@ -1,23 +1,23 @@
 ---
 name: 🚀 Feature Request
-about: Yeni özellik önermek için bu template'i kullanın
+about: Use this template to suggest new features
 title: '[FEATURE] '
 labels: 'enhancement'
-assignees: 'umur957'
+assignees: ''
 
 ---
 
-## 🚀 Özellik Açıklaması
-Önermek istediğiniz özelliğin detaylı açıklaması
+## 🚀 Feature Description
+Detailed description of the feature you want to suggest
 
-## 💡 Motivasyon
-Neden bu özelliğe ihtiyaç var? Hangi sorunu çözecek?
+## 💡 Motivation
+Why is this feature needed? What problem will it solve?
 
-## 🎯 Önerilen Çözüm
-Bu özelliğin nasıl uygulanabileceği hakkında fikirleriniz
+## 🎯 Proposed Solution
+Your ideas about how this feature could be implemented
 
-## 🔄 Alternatifler
-Düşündüğünüz alternatif çözümler neler?
+## 🔄 Alternatives
+What alternative solutions have you considered?
 
-## 📊 Ek Bilgiler
-Varsa mockup, wireframe, diagram vs. ekleyin
+## 📊 Additional Information
+Add mockups, wireframes, diagrams etc. if available

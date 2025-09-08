@@ -1,33 +1,33 @@
-## 📋 Değişiklik Özeti
-<!-- Neyi değiştirdiğinizi kısaca açıklayın -->
+## 📋 Change Summary
+<!-- Briefly describe what you changed -->
 
-## 🎯 Değişiklik Türü
-<!-- İlgili kutuları işaretleyin -->
-- [ ] 🐛 Bug fix (geriye uyumlu, sorun çözümü)
-- [ ] ✨ New feature (geriye uyumlu, yeni fonksiyonalite)
-- [ ] 💥 Breaking change (mevcut fonksiyonaliteyi etkiler)
-- [ ] 📚 Documentation update (dokümantasyon güncelleme)
+## 🎯 Change Type
+<!-- Check relevant boxes -->
+- [ ] 🐛 Bug fix (backward compatible, problem resolution)
+- [ ] ✨ New feature (backward compatible, new functionality)
+- [ ] 💥 Breaking change (affects existing functionality)
+- [ ] 📚 Documentation update (documentation update)
 
-## 🧪 Test Bilgileri
-<!-- Testlerinizi nasıl yaptığınızı açıklayın -->
-- [ ] Yerel testler başarılı
-- [ ] Docker container çalışıyor
-- [ ] Moodle fonksiyonları çalışıyor
-- [ ] Manual test yapıldı
+## 🧪 Test Information
+<!-- Describe how you tested your changes -->
+- [ ] Local tests successful
+- [ ] Docker container running
+- [ ] Moodle functions working
+- [ ] Manual testing performed
 
-## 📸 Screenshots (opsiyonel)
-<!-- UI değişiklikleri varsa ekran görüntüleri ekleyin -->
+## 📸 Screenshots (optional)
+<!-- Add screenshots if there are UI changes -->
 
 ## ✅ Checklist
-- [ ] Kod self-review yapıldı
-- [ ] Testler eklendi ve geçiyor
-- [ ] Dokümantasyon güncellendi
-- [ ] CHANGELOG.md güncellendi
-- [ ] Commit mesajları [Conventional Commits](https://conventionalcommits.org/) formatında
+- [ ] Code self-review completed
+- [ ] Tests added and passing
+- [ ] Documentation updated
+- [ ] CHANGELOG.md updated
+- [ ] Commit messages follow [Conventional Commits](https://conventionalcommits.org/) format
 
-## 🔗 İlgili Issues
-<!-- Varsa ilgili issue numaralarını belirtin -->
+## 🔗 Related Issues
+<!-- Specify related issue numbers if any -->
 Closes #(issue number)
 
-## 📋 Ek Notlar
-<!-- Reviewers için ek bilgiler -->
+## 📋 Additional Notes
+<!-- Additional information for reviewers -->

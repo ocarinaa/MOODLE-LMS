@@ -3,6 +3,7 @@ version: '3'
 services:
   mariadb:
     image: bitnami/mariadb:latest
+    container_name: moodle-lms-mariadb
     environment:
       - MARIADB_USER=bn_moodle
       - MARIADB_PASSWORD=bitnami123
@@ -13,6 +14,7 @@ services:
 
   moodle:
     image: bitnami/moodle:latest
+    container_name: moodle-lms-moodle
     environment:
       - MOODLE_DATABASE_HOST=mariadb
       - MOODLE_DATABASE_PORT_NUMBER=3306
@@ -22,7 +24,7 @@ services:
       - MOODLE_USERNAME=admin
       - MOODLE_PASSWORD=Admin@12345
       - MOODLE_EMAIL=admin@example.com
-      - MOODLE_SITE_NAME=Turfa Learn
+      - MOODLE_SITE_NAME=Moodle LMS
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - '8080:8080'

@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# Docker Compose servisleri başlat
+# Start Docker Compose services
 docker-compose up -d
 
-# Servislerin hazır olmasını bekle
-echo "⏳ Moodle başlatılıyor..."
+# Wait for services to be ready
+echo "⏳ Starting Moodle..."
 sleep 30
 
-# Status kontrolü
+# Status check
 docker-compose ps
 
-echo "✅ Moodle hazır!"
-echo "🌐 Erişim adresi: http://localhost:8080"
-echo "👤 Kullanıcı: admin"
-echo "🔑 Şifre: Admin@12345"
+echo "✅ Moodle is ready!"
+echo "🌐 Access URL: http://localhost:8080"
+echo "👤 Username: admin"
+echo "🔑 Password: Admin@12345"

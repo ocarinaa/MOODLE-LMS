@@ -1,23 +1,23 @@
-# ⚙️ TurfaLearn Konfigürasyon Rehberi
+# ⚙️ Moodle LMS Configuration Guide
 
-TurfaLearn sisteminin detaylı yapılandırma seçenekleri ve optimizasyon ayarları.
+Detailed configuration options and optimization settings for the Moodle LMS system.
 
-## 📋 İçindekiler
+## 📋 Table of Contents
 
-1. [Docker Compose Konfigürasyonu](#docker-compose-konfigürasyonu)
-2. [Moodle Konfigürasyonu](#moodle-konfigürasyonu)
-3. [Veritabanı Optimizasyonu](#veritabanı-optimizasyonu)
+1. [Docker Compose Configuration](#docker-compose-configuration)
+2. [Moodle Configuration](#moodle-configuration)
+3. [Database Optimization](#database-optimization)
 4. [Performance Tuning](#performance-tuning)
-5. [Güvenlik Yapılandırması](#güvenlik-yapılandırması)
-6. [Çoklu Dil Ayarları](#çoklu-dil-ayarları)
-7. [Email Konfigürasyonu](#email-konfigürasyonu)
-8. [Backup Yapılandırması](#backup-yapılandırması)
+5. [Security Configuration](#security-configuration)
+6. [Multi-language Settings](#multi-language-settings)
+7. [Email Configuration](#email-configuration)
+8. [Backup Configuration](#backup-configuration)
 
 ---
 
-## 🐳 Docker Compose Konfigürasyonu
+## 🐳 Docker Compose Configuration
 
-### Temel Yapılandırma
+### Basic Configuration
 
 ```yaml
 version: '3'
@@ -25,23 +25,23 @@ version: '3'
 services:
   mariadb:
     image: bitnami/mariadb:latest
-    container_name: turfalearn-mariadb
+    container_name: moodle-lms-mariadb
     environment:
-      # Temel Veritabanı Ayarları
+      # Basic Database Settings
       - MARIADB_USER=bn_moodle
       - MARIADB_PASSWORD=secure_password_2025
       - MARIADB_DATABASE=bitnami_moodle
       - MARIADB_ROOT_PASSWORD=root_secure_password_2025
       - ALLOW_EMPTY_PASSWORD=no
       
-      # Performans Optimizasyonu
+      # Performance Optimization
       - MARIADB_INNODB_BUFFER_POOL_SIZE=512M
       - MARIADB_QUERY_CACHE_SIZE=128M
       - MARIADB_QUERY_CACHE_TYPE=1
       - MARIADB_MAX_CONNECTIONS=200
       - MARIADB_THREAD_CACHE_SIZE=16
       
-      # Karakter Seti (Türkçe ve Emoji desteği)
+      # Character Set (UTF-8 and Emoji support)
       - MARIADB_CHARACTER_SET=utf8mb4
       - MARIADB_COLLATE=utf8mb4_unicode_ci
       
@@ -50,7 +50,7 @@ services:
       - ./config/mariadb/my.cnf:/opt/bitnami/mariadb/conf/my.cnf:ro
     restart: always
     networks:
-      - turfalearn_network
+      - moodle_network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 5s
@@ -58,34 +58,34 @@ services:
 
   moodle:
     image: bitnami/moodle:latest
-    container_name: turfalearn-moodle
+    container_name: moodle-lms-moodle
     environment:
-      # Veritabanı Bağlantı Ayarları
+      # Database Connection Settings
       - MARIADB_HOST=mariadb
       - MARIADB_PORT_NUMBER=3306
       - MOODLE_DATABASE_USER=bn_moodle
       - MOODLE_DATABASE_PASSWORD=secure_password_2025
       - MOODLE_DATABASE_NAME=bitnami_moodle
       
-      # Site Temel Ayarları
-      - MOODLE_SITE_NAME=TurfaLearn
+      # Site Basic Settings
+      - MOODLE_SITE_NAME=Moodle LMS
       - MOODLE_USERNAME=admin
       - MOODLE_PASSWORD=Admin_Secure_2025!
-      - MOODLE_EMAIL=admin@tuerfa.de
+      - MOODLE_EMAIL=admin@example.com
       - MOODLE_SKIP_BOOTSTRAP=no
       
-      # Dil ve Lokalizasyon
-      - MOODLE_LANG=tr
+      # Language and Localization
+      - MOODLE_LANG=en
       - TZ=Europe/Istanbul
       
-      # PHP Optimizasyon
+      # PHP Optimization
       - PHP_MEMORY_LIMIT=512M
       - PHP_MAX_EXECUTION_TIME=300
       - PHP_UPLOAD_MAX_FILESIZE=100M
       - PHP_POST_MAX_SIZE=100M
       - PHP_MAX_INPUT_VARS=5000
       
-      # Apache Ayarları
+      # Apache Settings
       - APACHE_SERVER_TOKENS=Prod
       - APACHE_SERVER_SIGNATURE=Off
       
@@ -102,17 +102,17 @@ services:
         condition: service_healthy
     restart: always
     networks:
-      - turfalearn_network
+      - moodle_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/login/index.php"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  # Redis Cache (Performance için)
+  # Redis Cache (for performance)
   redis:
     image: bitnami/redis:latest
-    container_name: turfalearn-redis
+    container_name: moodle-lms-redis
     environment:
       - REDIS_PASSWORD=redis_secure_password_2025
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
@@ -122,10 +122,10 @@ services:
       - redis_data:/bitnami/redis
     restart: always
     networks:
-      - turfalearn_network
+      - moodle_network
 
 networks:
-  turfalearn_network:
+  moodle_network:
     driver: bridge
 
 volumes:
@@ -139,22 +139,22 @@ volumes:
     driver: local
 ```
 
-### Environment Dosyası (.env)
+### Environment File (.env)
 
 ```bash
-# .env dosyası oluştur
+# Create .env file
 cat > .env << 'EOF'
-# TurfaLearn Environment Configuration
+# Moodle LMS Environment Configuration
 
 # Site Configuration
-MOODLE_SITE_NAME=TurfaLearn
+MOODLE_SITE_NAME=Moodle LMS
 MOODLE_URL=https://your-domain.com
-MOODLE_ADMIN_EMAIL=admin@tuerfa.de
+MOODLE_ADMIN_EMAIL=admin@example.com
 
 # Admin Account
 MOODLE_USERNAME=admin
 MOODLE_PASSWORD=Generate_Strong_Password_Here!
-MOODLE_EMAIL=admin@tuerfa.de
+MOODLE_EMAIL=admin@example.com
 
 # Database Configuration
 MARIADB_HOST=mariadb
@@ -172,30 +172,30 @@ ALLOW_EMPTY_PASSWORD=no
 
 # Localization
 TZ=Europe/Istanbul
-MOODLE_LANG=tr
+MOODLE_LANG=en
 
 # Performance
 PHP_MEMORY_LIMIT=512M
 PHP_MAX_EXECUTION_TIME=300
 
-# BigBlueButton (Opsiyonel)
+# BigBlueButton (Optional)
 BBB_SERVER_URL=https://your-bbb-server.com/bigbluebutton/api/
 BBB_SHARED_SECRET=your_bbb_shared_secret
 
-# Examus (Opsiyonel)
+# Examus (Optional)
 EXAMUS_API_TOKEN=your_examus_api_token
 EXAMUS_API_URL=https://your-domain.com/webservice/rest/server.php
 EOF
 
-# .env dosyasını güvenli hale getir
+# Secure .env file
 chmod 600 .env
 ```
 
 ---
 
-## 📚 Moodle Konfigürasyonu
+## 📚 Moodle Configuration
 
-### config.php Detaylı Ayarları
+### Detailed config.php Settings
 
 ```php
 <?php
@@ -242,9 +242,9 @@ $CFG->passwordsaltmain = 'YourRandomSaltHereChangeThis123456789012';
 //=========================================================================
 // 5. LANGUAGE SETTINGS
 //=========================================================================
-$CFG->lang = getenv('MOODLE_LANG') ?: 'tr';
+$CFG->lang = getenv('MOODLE_LANG') ?: 'en';
 $CFG->langmenu = true;
-$CFG->langlist = 'tr,de,en';
+$CFG->langlist = 'en,de,tr';
 
 //=========================================================================
 // 6. PERFORMANCE SETTINGS
@@ -256,7 +256,7 @@ $CFG->cachetext = 60;
 
 // Session handling
 $CFG->sessiontimeout = 7200;
-$CFG->sessioncookie = 'TurfaLMS';
+$CFG->sessioncookie = 'MoodleLMS';
 $CFG->sessioncookiepath = '/';
 $CFG->sessioncookiedomain = '';
 
@@ -295,7 +295,7 @@ $CFG->minpasswordnonalphanum = 1;
 $CFG->cookiesecure = true;
 $CFG->cookiehttponly = true;
 
-// IP Restriction (opsiyonel)
+// IP Restriction (optional)
 // $CFG->allowedips = '192.168.1.0/24,10.0.0.0/8';
 
 //=========================================================================
@@ -306,8 +306,8 @@ $CFG->smtpsecure = 'tls';
 $CFG->smtpuser = getenv('SMTP_USER') ?: '';
 $CFG->smtppass = getenv('SMTP_PASS') ?: '';
 $CFG->smtpmaxbulk = 1;
-$CFG->noreplyaddress = getenv('MOODLE_ADMIN_EMAIL') ?: 'noreply@tuerfa.de';
-$CFG->supportemail = getenv('MOODLE_ADMIN_EMAIL') ?: 'info@tuerfa.de';
+$CFG->noreplyaddress = getenv('MOODLE_ADMIN_EMAIL') ?: 'noreply@example.com';
+$CFG->supportemail = getenv('MOODLE_ADMIN_EMAIL') ?: 'info@example.com';
 
 //=========================================================================
 // 9. FILE UPLOAD SETTINGS
@@ -328,7 +328,7 @@ $CFG->bigbluebuttonbn_shared_secret = getenv('BBB_SHARED_SECRET') ?: '';
 $CFG->examus_token = getenv('EXAMUS_API_TOKEN') ?: '';
 
 //=========================================================================
-// 12. DEBUG SETTINGS (Production'da disable edilmeli)
+// 12. DEBUG SETTINGS (Should be disabled in Production)
 //=========================================================================
 $CFG->debug = 0;
 $CFG->debugdisplay = 0;
@@ -352,13 +352,13 @@ date_default_timezone_set(getenv('TZ') ?: 'Europe/Istanbul');
 
 // Maintenance mode
 $CFG->maintenance_enabled = false;
-$CFG->maintenance_message = 'Site bakımda. Lütfen daha sonra tekrar deneyin.';
+$CFG->maintenance_message = 'Site is under maintenance. Please try again later.';
 
 require_once(__DIR__ . '/lib/setup.php');
 ?>
 ```
 
-### PHP Konfigürasyonu
+### PHP Configuration
 
 ```ini
 ; config/moodle/php.ini
@@ -419,9 +419,9 @@ extension=redis
 
 ---
 
-## 🗄️ Veritabanı Optimizasyonu
+## 🗄️ Database Optimization
 
-### MariaDB Konfigürasyonu
+### MariaDB Configuration
 
 ```ini
 # config/mariadb/my.cnf
@@ -473,7 +473,7 @@ slow_query_log_file = /opt/bitnami/mariadb/logs/mysql_slow.log
 long_query_time = 2
 log_queries_not_using_indexes = 0
 
-# Binary Logging (Replication için)
+# Binary Logging (for replication)
 log-bin = mysql-bin
 binlog_format = ROW
 expire_logs_days = 7
@@ -487,55 +487,55 @@ port = 3306
 socket = /opt/bitnami/mariadb/tmp/mysql.sock
 ```
 
-### Veritabanı Bakım Scriptleri
+### Database Maintenance Scripts
 
 ```bash
 #!/bin/bash
 # scripts/db-maintenance.sh
 
-# Veritabanı optimizasyon scripti
-DB_CONTAINER="turfalearn-mariadb"
+# Database optimization script
+DB_CONTAINER="moodle-lms-mariadb"
 DB_USER="bn_moodle"
 DB_PASS="secure_password_2025"
 DB_NAME="bitnami_moodle"
 
-echo "🔧 Veritabanı bakımı başlıyor..."
+echo "🔧 Database maintenance starting..."
 
-# 1. Tablo optimizasyonu
-echo "📊 Tabloları optimize ediliyor..."
+# 1. Table optimization
+echo "📊 Optimizing tables..."
 docker exec $DB_CONTAINER mysqlcheck \
     --optimize --all-databases \
     -u $DB_USER -p$DB_PASS
 
-# 2. Tablo onarımı
-echo "🔨 Tablolar onarılıyor..."
+# 2. Table repair
+echo "🔨 Repairing tables..."
 docker exec $DB_CONTAINER mysqlcheck \
     --repair --all-databases \
     -u $DB_USER -p$DB_PASS
 
-# 3. Log temizliği
-echo "🧹 Eski loglar temizleniyor..."
+# 3. Log cleanup
+echo "🧹 Cleaning old logs..."
 docker exec $DB_CONTAINER mysql \
     -u root -p$MARIADB_ROOT_PASSWORD \
     -e "PURGE BINARY LOGS BEFORE DATE_SUB(NOW(), INTERVAL 7 DAY);"
 
-# 4. İstatistik güncelleme
-echo "📈 İstatistikler güncelleniyor..."
+# 4. Update statistics
+echo "📈 Updating statistics..."
 docker exec $DB_CONTAINER mysql \
     -u $DB_USER -p$DB_PASS \
     -e "USE $DB_NAME; ANALYZE TABLE mdl_course, mdl_user, mdl_quiz, mdl_question;"
 
-echo "✅ Veritabanı bakımı tamamlandı!"
+echo "✅ Database maintenance completed!"
 ```
 
 ---
 
 ## ⚡ Performance Tuning
 
-### Sistem Düzeyinde Optimizasyonlar
+### System Level Optimizations
 
 ```bash
-# /etc/sysctl.conf optimizasyonları
+# /etc/sysctl.conf optimizations
 cat >> /etc/sysctl.conf << EOF
 
 # Network optimizations
@@ -556,17 +556,17 @@ vm.dirty_background_ratio = 5
 
 EOF
 
-# Değişiklikleri uygula
+# Apply changes
 sysctl -p
 ```
 
 ### Docker Container Limits
 
 ```yaml
-# docker-compose.yml'ye resource limits ekle
+# Add resource limits to docker-compose.yml
 services:
   mariadb:
-    # ... diğer ayarlar ...
+    # ... other settings ...
     deploy:
       resources:
         limits:
@@ -577,7 +577,7 @@ services:
           cpus: '1.0'
 
   moodle:
-    # ... diğer ayarlar ...
+    # ... other settings ...
     deploy:
       resources:
         limits:
@@ -588,7 +588,7 @@ services:
           cpus: '2.0'
           
   redis:
-    # ... diğer ayarlar ...
+    # ... other settings ...
     deploy:
       resources:
         limits:
@@ -599,17 +599,17 @@ services:
           cpus: '0.5'
 ```
 
-### Moodle Cache Yapılandırması
+### Moodle Cache Configuration
 
-Moodle admin panelinden **Site Administration > Plugins > Caching > Configuration**:
+From Moodle admin panel **Site Administration > Plugins > Caching > Configuration**:
 
 ```php
-// Cache store tanımları
+// Cache store definitions
 'default_application_store' => 'redis',
 'default_session_store' => 'redis',
 'default_request_store' => 'static',
 
-// Özel cache definitions
+// Custom cache definitions
 $CFG->cache_stores = array(
     'redis_sessions' => array(
         'plugin' => 'cachestore_redis',
@@ -635,17 +635,17 @@ $CFG->cache_stores = array(
 
 ---
 
-## 🔒 Güvenlik Yapılandırması
+## 🔒 Security Configuration
 
-### Firewall Kuralları
+### Firewall Rules
 
 ```bash
 #!/bin/bash
 # scripts/firewall-setup.sh
 
-echo "🔥 Firewall kuralları yapılandırılıyor..."
+echo "🔥 Configuring firewall rules..."
 
-# UFW'yi sıfırla
+# Reset UFW
 sudo ufw --force reset
 
 # Default policies
@@ -659,10 +659,10 @@ sudo ufw allow 22/tcp
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 
-# Moodle development port (sadece local network)
+# Moodle development port (local network only)
 sudo ufw allow from 192.168.0.0/16 to any port 8080
 
-# BigBlueButton portları (opsiyonel)
+# BigBlueButton ports (optional)
 sudo ufw allow 1935/tcp
 sudo ufw allow 7443/tcp
 
@@ -671,19 +671,19 @@ sudo ufw limit ssh
 sudo ufw limit 80/tcp
 sudo ufw limit 443/tcp
 
-# UFW'yi aktifleştir
+# Enable UFW
 sudo ufw --force enable
 
-echo "✅ Firewall kuralları aktifleştirildi!"
+echo "✅ Firewall rules activated!"
 ```
 
-### Fail2ban Yapılandırması
+### Fail2ban Configuration
 
 ```bash
-# Fail2ban kur
+# Install Fail2ban
 sudo apt install -y fail2ban
 
-# Moodle için özel filter
+# Create custom filter for Moodle
 sudo tee /etc/fail2ban/filter.d/moodle.conf << 'EOF'
 [Definition]
 failregex = ^<HOST> - .* "POST .*login.*" (4|5)\d\d
@@ -691,7 +691,7 @@ failregex = ^<HOST> - .* "POST .*login.*" (4|5)\d\d
 ignoreregex =
 EOF
 
-# Jail konfigürasyonu
+# Jail configuration
 sudo tee /etc/fail2ban/jail.d/moodle.conf << 'EOF'
 [moodle]
 enabled = true
@@ -704,14 +704,14 @@ bantime = 3600
 action = iptables-multiport[name=moodle, port="http,https,8080"]
 EOF
 
-# Fail2ban'ı yeniden başlat
+# Restart Fail2ban
 sudo systemctl restart fail2ban
 ```
 
-### SSL/TLS Güvenlik Ayarları
+### SSL/TLS Security Settings
 
 ```nginx
-# /etc/nginx/sites-available/turfalearn
+# /etc/nginx/sites-available/moodle-lms
 server {
     listen 443 ssl http2;
     server_name your-domain.com www.your-domain.com;
@@ -736,7 +736,7 @@ server {
     add_header X-XSS-Protection "1; mode=block";
     add_header Referrer-Policy "strict-origin-when-cross-origin";
     
-    # CSP Header (Moodle için özelleştirilmiş)
+    # CSP Header (customized for Moodle)
     add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-src 'self' https:;";
     
     location / {
@@ -771,69 +771,69 @@ server {
 
 ---
 
-## 🌍 Çoklu Dil Ayarları
+## 🌍 Multi-language Settings
 
-### Dil Paketi Kurulumu
+### Language Pack Installation
 
 ```bash
-# Container içinde dil paketlerini kur
-docker exec -it turfalearn-moodle bash
+# Install language packs inside container
+docker exec -it moodle-lms-moodle bash
 
-# Türkçe dil paketi
+# Install additional language packs
 cd /opt/bitnami/moodle
 php admin/cli/uninstall_language.php --lang=tr --confirm
 php admin/cli/install_language.php --lang=tr
 
-# Almanca dil paketi
+# German language pack
 php admin/cli/install_language.php --lang=de
 
-# İngilizce (varsayılan olarak yüklü)
+# English (installed by default)
 php admin/cli/install_language.php --lang=en
 
-# Mevcut dilleri listele
+# List available languages
 php admin/cli/list_languages.php
 
 exit
 ```
 
-### Moodle Dil Ayarları
+### Moodle Language Settings
 
 ```php
-// config.php'ye ekle
-$CFG->lang = 'tr';                    // Varsayılan dil
-$CFG->langmenu = true;                // Dil menüsünü göster
-$CFG->langlist = 'tr,de,en';          // Mevcut diller
-$CFG->langcache = true;               // Dil cache'ini aktifleştir
-$CFG->langstringcache = true;         // String cache'ini aktifleştir
+// Add to config.php
+$CFG->lang = 'en';                    // Default language
+$CFG->langmenu = true;                // Show language menu
+$CFG->langlist = 'en,de,tr';          // Available languages
+$CFG->langcache = true;               // Enable language cache
+$CFG->langstringcache = true;         // Enable string cache
 ```
 
-### Özel Dil Dizgeleri
+### Custom Language Strings
 
 ```bash
-# Özel dil dosyası oluştur
-mkdir -p /opt/bitnami/moodle/lang/tr_local
+# Create custom language file
+mkdir -p /opt/bitnami/moodle/lang/en_local
 
-# Özel terimler için dosya
-cat > /opt/bitnami/moodle/lang/tr_local/moodle.php << 'EOF'
+# Custom terms file
+cat > /opt/bitnami/moodle/lang/en_local/moodle.php << 'EOF'
 <?php
-// TurfaLearn özel terimleri
+// Custom terms for Moodle LMS
 
-$string['sitename'] = 'TurfaLearn';
-$string['welcome'] = 'TurfaLearn Öğrenme Yönetim Sistemine Hoş Geldiniz';
-$string['supportemail'] = 'Destek için: info@tuerfa.de';
-$string['company'] = 'Turfa GbR - Dijital Eğitim Çözümleri';
+$string['sitename'] = 'Moodle LMS';
+$string['welcome'] = 'Welcome to Moodle Learning Management System';
+$string['supportemail'] = 'For support: info@example.com';
+$string['company'] = 'Educational Institution - Digital Learning Solutions';
 ?>
 EOF
 ```
 
 ---
 
-## 📧 Email Konfigürasyonu
+## 📧 Email Configuration
 
-### SMTP Ayarları
+### SMTP Settings
 
 ```bash
-# .env dosyasına SMTP ayarları ekle
+# Add SMTP settings to .env file
 cat >> .env << 'EOF'
 
 # SMTP Configuration
@@ -844,15 +844,15 @@ SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
 
 # Email Settings
-MOODLE_NOREPLY_EMAIL=noreply@tuerfa.de
-MOODLE_SUPPORT_EMAIL=info@tuerfa.de
+MOODLE_NOREPLY_EMAIL=noreply@example.com
+MOODLE_SUPPORT_EMAIL=info@example.com
 EOF
 ```
 
-### Moodle Email Yapılandırması
+### Moodle Email Configuration
 
 ```php
-// config.php'ye email ayarları
+// Add email settings to config.php
 $CFG->smtphosts = getenv('SMTP_HOST') ?: 'localhost';
 $CFG->smtpport = getenv('SMTP_PORT') ?: '587';
 $CFG->smtpsecure = getenv('SMTP_SECURE') ?: 'tls';
@@ -860,50 +860,50 @@ $CFG->smtpuser = getenv('SMTP_USER') ?: '';
 $CFG->smtppass = getenv('SMTP_PASS') ?: '';
 $CFG->smtpmaxbulk = 1;
 
-// Email adresleri
-$CFG->noreplyaddress = getenv('MOODLE_NOREPLY_EMAIL') ?: 'noreply@tuerfa.de';
-$CFG->supportemail = getenv('MOODLE_SUPPORT_EMAIL') ?: 'info@tuerfa.de';
+// Email addresses
+$CFG->noreplyaddress = getenv('MOODLE_NOREPLY_EMAIL') ?: 'noreply@example.com';
+$CFG->supportemail = getenv('MOODLE_SUPPORT_EMAIL') ?: 'info@example.com';
 
-// Email ayarları
-$CFG->allowedemaildomains = 'tuerfa.de,gmail.com,outlook.com,yahoo.com';
+// Email settings
+$CFG->allowedemaildomains = 'example.com,gmail.com,outlook.com,yahoo.com';
 $CFG->emailchangeconfirmation = true;
 $CFG->emaildisable = false;
 ```
 
-### Email Test Scripti
+### Email Test Script
 
 ```bash
 #!/bin/bash
 # scripts/test-email.sh
 
-echo "📧 Email yapılandırması test ediliyor..."
+echo "📧 Testing email configuration..."
 
-# Moodle CLI ile test emaili gönder
-docker exec turfalearn-moodle php /opt/bitnami/moodle/admin/cli/test_outgoing_mail.php \
-    --to=test@tuerfa.de \
-    --subject="TurfaLearn Test Email" \
-    --message="Bu bir test emailidir."
+# Send test email via Moodle CLI
+docker exec moodle-lms-moodle php /opt/bitnami/moodle/admin/cli/test_outgoing_mail.php \
+    --to=test@example.com \
+    --subject="Moodle LMS Test Email" \
+    --message="This is a test email."
 
-echo "✅ Test emaili gönderildi! Gelen kutusunu kontrol edin."
+echo "✅ Test email sent! Please check your inbox."
 ```
 
 ---
 
-## 💾 Backup Yapılandırması
+## 💾 Backup Configuration
 
-### Otomatik Backup Sistemi
+### Automated Backup System
 
 ```bash
 #!/bin/bash
 # scripts/automated-backup.sh
 
-# Yapılandırma
-BACKUP_DIR="/opt/backups/turfalearn"
+# Configuration
+BACKUP_DIR="/opt/backups/moodle-lms"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 RETENTION_DAYS=30
 S3_BUCKET="your-backup-bucket"
 
-# Slack webhook (opsiyonel)
+# Slack webhook (optional)
 SLACK_WEBHOOK="https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
 
 log() {
@@ -918,15 +918,15 @@ send_slack_notification() {
     fi
 }
 
-# Backup dizinini oluştur
+# Create backup directory
 mkdir -p "$BACKUP_DIR"
 
-log "🔄 TurfaLearn otomatik backup başlıyor..."
-send_slack_notification "🔄 TurfaLearn backup başladı"
+log "🔄 Moodle LMS automated backup starting..."
+send_slack_notification "🔄 Moodle LMS backup started"
 
 # 1. Database backup
-log "📊 Veritabanı yedeği alınıyor..."
-docker exec turfalearn-mariadb mysqldump \
+log "📊 Creating database backup..."
+docker exec moodle-lms-mariadb mysqldump \
     --single-transaction \
     --routines \
     --triggers \
@@ -934,101 +934,97 @@ docker exec turfalearn-mariadb mysqldump \
     | gzip > "$BACKUP_DIR/database_$TIMESTAMP.sql.gz"
 
 if [ $? -eq 0 ]; then
-    log "✅ Veritabanı yedeği tamamlandı"
+    log "✅ Database backup completed"
 else
-    log "❌ Veritabanı yedeği başarısız!"
-    send_slack_notification "❌ TurfaLearn veritabanı backup başarısız!"
+    log "❌ Database backup failed!"
+    send_slack_notification "❌ Moodle LMS database backup failed!"
     exit 1
 fi
 
 # 2. Moodle data backup
-log "📁 Moodle veri yedeği alınıyor..."
+log "📁 Creating Moodle data backup..."
 docker run --rm \
-    -v turfalearn_moodledata_data:/data:ro \
+    -v moodle-lms_moodledata_data:/data:ro \
     -v "$BACKUP_DIR":/backup \
     alpine tar czf "/backup/moodledata_$TIMESTAMP.tar.gz" -C /data .
 
 # 3. Configuration backup
-log "⚙️ Konfigürasyon yedeği alınıyor..."
+log "⚙️ Creating configuration backup..."
 tar czf "$BACKUP_DIR/config_$TIMESTAMP.tar.gz" \
-    -C /opt/turfalearn \
+    -C /opt/moodle-lms \
     docker-compose.yml \
     .env \
     config/ \
     scripts/
 
-# 4. AWS S3'e yükle (opsiyonel)
+# 4. Upload to AWS S3 (optional)
 if command -v aws &> /dev/null && [ -n "$S3_BUCKET" ]; then
-    log "☁️ S3'e yükleniyor..."
-    aws s3 sync "$BACKUP_DIR" "s3://$S3_BUCKET/turfalearn/" --delete
+    log "☁️ Uploading to S3..."
+    aws s3 sync "$BACKUP_DIR" "s3://$S3_BUCKET/moodle-lms/" --delete
     
     if [ $? -eq 0 ]; then
-        log "✅ S3 yükleme tamamlandı"
+        log "✅ S3 upload completed"
     else
-        log "❌ S3 yükleme başarısız!"
+        log "❌ S3 upload failed!"
     fi
 fi
 
-# 5. Eski backupları temizle
-log "🧹 Eski backuplar temizleniyor..."
+# 5. Clean old backups
+log "🧹 Cleaning old backups..."
 find "$BACKUP_DIR" -type f -mtime +$RETENTION_DAYS -delete
 
-# 6. Backup boyutunu hesapla
+# 6. Calculate backup size
 BACKUP_SIZE=$(du -sh "$BACKUP_DIR" | cut -f1)
 
-log "✅ Backup tamamlandı! Toplam boyut: $BACKUP_SIZE"
-send_slack_notification "✅ TurfaLearn backup tamamlandı! Boyut: $BACKUP_SIZE"
+log "✅ Backup completed! Total size: $BACKUP_SIZE"
+send_slack_notification "✅ Moodle LMS backup completed! Size: $BACKUP_SIZE"
 
-# 7. Backup doğrulama
-log "🔍 Backup doğrulaması..."
+# 7. Backup verification
+log "🔍 Verifying backup..."
 if [ -f "$BACKUP_DIR/database_$TIMESTAMP.sql.gz" ] && \
    [ -f "$BACKUP_DIR/moodledata_$TIMESTAMP.tar.gz" ] && \
    [ -f "$BACKUP_DIR/config_$TIMESTAMP.tar.gz" ]; then
-    log "✅ Tüm backup dosyları başarıyla oluşturuldu"
+    log "✅ All backup files created successfully"
 else
-    log "❌ Bazı backup dosyları eksik!"
-    send_slack_notification "❌ TurfaLearn backup doğrulaması başarısız!"
+    log "❌ Some backup files are missing!"
+    send_slack_notification "❌ Moodle LMS backup verification failed!"
     exit 1
 fi
 ```
 
-### Crontab Yapılandırması
+### Crontab Configuration
 
 ```bash
-# Backup crontab'ını kur
+# Install backup crontab
 cat > /tmp/backup-crontab << 'EOF'
-# TurfaLearn Backup Schedule
+# Moodle LMS Backup Schedule
 
-# Günlük database backup (her gece 02:00)
-0 2 * * * /opt/turfalearn/scripts/automated-backup.sh >> /var/log/turfalearn-backup.log 2>&1
+# Daily database backup (every night at 02:00)
+0 2 * * * /opt/moodle-lms/scripts/automated-backup.sh >> /var/log/moodle-lms-backup.log 2>&1
 
-# Haftalık full backup (Pazar 03:00)
-0 3 * * 0 /opt/turfalearn/scripts/automated-backup.sh --full >> /var/log/turfalearn-backup.log 2>&1
+# Weekly full backup (Sunday at 03:00)
+0 3 * * 0 /opt/moodle-lms/scripts/automated-backup.sh --full >> /var/log/moodle-lms-backup.log 2>&1
 
-# Aylık backup temizliği (her ayın 1'i 04:00)
-0 4 1 * * find /opt/backups/turfalearn -type f -mtime +90 -delete >> /var/log/turfalearn-cleanup.log 2>&1
+# Monthly backup cleanup (1st of each month at 04:00)
+0 4 1 * * find /opt/backups/moodle-lms -type f -mtime +90 -delete >> /var/log/moodle-lms-cleanup.log 2>&1
 EOF
 
-# Crontab'ı yükle
+# Load crontab
 crontab /tmp/backup-crontab
 rm /tmp/backup-crontab
 
-echo "✅ Backup crontab yapılandırıldı"
+echo "✅ Backup crontab configured"
 ```
 
 ---
 
-## 📞 Destek
+## 📞 Support
 
-Bu konfigürasyon rehberi ile ilgili sorularınız için:
+For questions about this configuration guide:
 
-- 🐛 **GitHub Issues**: [Issues sayfası](https://github.com/umur957/moodle-render/issues)
-- 📧 **Email**: info@tuerfa.de
-- 📱 **Telefon**: +90 0533 924 3850
-- 📚 **Dokümantasyon**: [docs/](../README.md)
+- 🐛 **GitHub Issues**: [Issues page](https://github.com/umur957/moodle-lms/issues)
+- 📚 **Documentation**: [docs/](../README.md)
 
 ---
 
-*Bu konfigürasyon rehberi sürekli güncellenmektedir. Önerilerinizi GitHub Issues üzerinden paylaşabilirsiniz.*
-
-*© 2025 Turfa GbR. Tüm hakları saklıdır.*
+*This configuration guide is continuously updated. You can share your suggestions through GitHub Issues.*

@@ -1,16 +1,17 @@
 # Moodle LMS Deployment
 
-Moodle öğrenme yönetim sistemi için DockerFile ve dağıtım konfigürasyonu. BigBlueButton ve Safe Exam Browser ile entegre edilmiş bir Moodle kurulumu içerir.
+Moodle learning management system DockerFile and deployment configuration. Includes a Moodle setup integrated with BigBlueButton and Safe Exam Browser.
 
-## Kullanılan Teknolojiler
+## Technologies Used
 
 - Moodle LMS
 - MariaDB
 - Docker
 
-## Kurulum
+## Installation
 
-Docker ile kurulum için:
+For Docker installation:
 
 ```bash
 docker-compose up -d
+```

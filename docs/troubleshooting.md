@@ -1,38 +1,38 @@
-# 🔧 TurfaLearn - Sorun Giderme Kılavuzu
+# 🔧 Moodle LMS - Troubleshooting Guide
 
 <div align="center">
   <img src="https://via.placeholder.com/150x100.png?text=Troubleshooting" alt="Troubleshooting" width="150"/>
-  <h3>Sorunları Çözelim!</h3>
-  <p><em>Adım adım çözüm rehberi</em></p>
+  <h3>Let's Solve Problems!</h3>
+  <p><em>Step-by-step solution guide</em></p>
 </div>
 
 ---
 
-## 📋 İçindekiler
+## 📋 Contents
 
-1. [Hızlı Tanı](#hızlı-tanı)
-2. [Kurulum Sorunları](#kurulum-sorunları)
-3. [Docker Sorunları](#docker-sorunları)
-4. [Moodle Sorunları](#moodle-sorunları)
-5. [Veritabanı Sorunları](#veritabanı-sorunları)
-6. [Entegrasyon Sorunları](#entegrasyon-sorunları)
-7. [Performans Sorunları](#performans-sorunları)
-8. [Güvenlik Sorunları](#güvenlik-sorunları)
-9. [Log Analizi](#log-analizi)
-10. [Acil Durum Kurtarma](#acil-durum-kurtarma)
+1. [Quick Diagnosis](#quick-diagnosis)
+2. [Installation Issues](#installation-issues)
+3. [Docker Issues](#docker-issues)
+4. [Moodle Issues](#moodle-issues)
+5. [Database Issues](#database-issues)
+6. [Integration Issues](#integration-issues)
+7. [Performance Issues](#performance-issues)
+8. [Security Issues](#security-issues)
+9. [Log Analysis](#log-analysis)
+10. [Emergency Recovery](#emergency-recovery)
 
 ---
 
-## 🩺 Hızlı Tanı
+## 🩺 Quick Diagnosis
 
-### ⚡ **Sistem Durumu Kontrolü**
+### ⚡ **System Status Check**
 
 ```bash
-# Temel sistem kontrolü
+# Basic system check
 ./quick-diagnose.sh
 
-# Veya manuel kontrol
-echo "=== TurfaLearn System Check ==="
+# Or manual check
+echo "=== Moodle LMS System Check ==="
 echo "Docker Status: $(docker --version 2>/dev/null || echo 'NOT INSTALLED')"
 echo "Docker Compose: $(docker-compose --version 2>/dev/null || echo 'NOT INSTALLED')"
 echo "Services Status:"
@@ -41,114 +41,114 @@ echo "Disk Space: $(df -h . | tail -1 | awk '{print $4}')"
 echo "Memory Usage: $(free -h | grep Mem | awk '{print $3"/"$2}')"
 ```
 
-### 🚦 **Servis Durum Kontrolleri**
+### 🚦 **Service Status Checks**
 
-| Servis | Kontrol Komutu | Beklenen Durum |
+| Service | Check Command | Expected Status |
 |--------|----------------|----------------|
 | **Moodle** | `curl -f http://localhost:8080` | HTTP 200 |
 | **MariaDB** | `docker exec mariadb mysqladmin ping` | `mysqld is alive` |
-| **Docker** | `docker info` | Çalışır durumda |
+| **Docker** | `docker info` | Running |
 
 ---
 
-## 🏗️ Kurulum Sorunları
+## 🏗️ Installation Issues
 
-### ❌ **Problem: "Docker bulunamadı"**
+### ❌ **Problem: "Docker not found"**
 
-**Belirti:**
+**Symptom:**
 ```
 bash: docker: command not found
 ```
 
-**Çözüm:**
+**Solution:**
 ```bash
-# Ubuntu/Debian için Docker kurulumu
+# Docker installation for Ubuntu/Debian
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 
-# Kullanıcıyı docker grubuna ekle
+# Add user to docker group
 sudo usermod -aG docker $USER
 
-# Yeniden giriş yapın veya:
+# Re-login or:
 newgrp docker
 
-# Docker servisini başlat
+# Start Docker service
 sudo systemctl start docker
 sudo systemctl enable docker
 ```
 
-### ❌ **Problem: "İzin reddedildi (Permission denied)"**
+### ❌ **Problem: "Permission denied"**
 
-**Belirti:**
+**Symptom:**
 ```
 docker: permission denied while trying to connect to the Docker daemon socket
 ```
 
-**Çözüm:**
+**Solution:**
 ```bash
-# Mevcut kullanıcıyı docker grubuna ekle
+# Add current user to docker group
 sudo usermod -aG docker $USER
 
-# Grup değişikliğini aktifleştir
+# Activate group change
 newgrp docker
 
-# Veya sistemi yeniden başlatın
+# Or restart system
 sudo reboot
 ```
 
-### ❌ **Problem: "Port zaten kullanımda"**
+### ❌ **Problem: "Port already in use"**
 
-**Belirti:**
+**Symptom:**
 ```
 ERROR: for moodle  Cannot start service moodle: driver failed programming external connectivity on endpoint
 ```
 
-**Çözüm:**
+**Solution:**
 ```bash
-# Port 8080'i kullanan süreci bul
+# Find process using port 8080
 sudo lsof -i :8080
 
-# Süreci sonlandır (PID ile)
+# Kill process (with PID)
 sudo kill -9 <PID>
 
-# Veya farklı port kullan (docker-compose.yml)
+# Or use different port (docker-compose.yml)
 ports:
-  - "8081:8080"  # 8081 portunu kullan
+  - "8081:8080"  # Use port 8081
 ```
 
 ---
 
-## 🐳 Docker Sorunları
+## 🐳 Docker Issues
 
-### ❌ **Problem: Konteyner sürekli yeniden başlıyor**
+### ❌ **Problem: Container keeps restarting**
 
-**Belirti:**
+**Symptom:**
 ```bash
 docker-compose ps
 # Status: Restarting
 ```
 
-**Tanı ve Çözüm:**
+**Diagnosis and Solution:**
 ```bash
-# Logları kontrol et
+# Check logs
 docker-compose logs moodle
 
-# Detaylı log
+# Detailed log
 docker logs --details moodle-container-name
 
-# Konteyner içine gir ve manuel test et
+# Enter container and test manually
 docker exec -it moodle-container-name bash
 
-# Memory sorununu kontrol et
+# Check memory issue
 docker stats
 ```
 
-**Olası çözümler:**
+**Possible solutions:**
 ```yaml
-# docker-compose.yml memory limit arttır
+# Increase memory limit in docker-compose.yml
 services:
   moodle:
-    # ... diğer ayarlar
+    # ... other settings
     deploy:
       resources:
         limits:
@@ -157,41 +157,41 @@ services:
           memory: 1G
 ```
 
-### ❌ **Problem: Volume mount sorunları**
+### ❌ **Problem: Volume mount issues**
 
-**Belirti:**
+**Symptom:**
 ```
 Error response from daemon: invalid mount config
 ```
 
-**Çözüm:**
+**Solution:**
 ```bash
-# Volume'leri temizle (DİKKAT: Veri kaybolur!)
+# Clean volumes (WARNING: Data will be lost!)
 docker-compose down -v
 
-# Volume'leri yeniden oluştur
-docker volume create moodle-render_moodle_data
-docker volume create moodle-render_moodledata_data
-docker volume create moodle-render_mariadb_data
+# Recreate volumes
+docker volume create moodle-lms_moodle_data
+docker volume create moodle-lms_moodledata_data
+docker volume create moodle-lms_mariadb_data
 
-# Yeniden başlat
+# Restart
 docker-compose up -d
 ```
 
-### ❌ **Problem: Network bağlantı sorunları**
+### ❌ **Problem: Network connection issues**
 
-**Belirti:**
+**Symptom:**
 ```
 moodle    | mysqli::real_connect(): (HY000/2002): Connection refused
 ```
 
-**Çözüm:**
+**Solution:**
 ```bash
-# Network durumunu kontrol et
+# Check network status
 docker network ls
-docker network inspect moodle-render_default
+docker network inspect moodle-lms_default
 
-# Network yeniden oluştur
+# Recreate network
 docker-compose down
 docker network prune -f
 docker-compose up -d
@@ -199,253 +199,253 @@ docker-compose up -d
 
 ---
 
-## 🎓 Moodle Sorunları
+## 🎓 Moodle Issues
 
-### ❌ **Problem: "Site under maintenance" mesajı**
+### ❌ **Problem: "Site under maintenance" message**
 
-**Belirti:**
-- Ana sayfa maintenance mode gösteriyor
-- Admin paneline erişilemyor
+**Symptom:**
+- Home page showing maintenance mode
+- Cannot access admin panel
 
-**Çözüm:**
+**Solution:**
 ```bash
-# Konteyner içine gir
-docker exec -it moodle-render_moodle_1 bash
+# Enter container
+docker exec -it moodle-lms_moodle_1 bash
 
-# Maintenance mode kapat
+# Disable maintenance mode
 php admin/cli/maintenance.php --disable
 
-# Veya config.php dosyasını düzenle
+# Or edit config.php file
 vi /opt/bitnami/moodle/config.php
-# Bu satırı kaldır veya comment'le:
+# Remove or comment this line:
 # $CFG->maintenance_enabled = true;
 ```
 
 ### ❌ **Problem: "Invalid login credentials"**
 
-**Belirti:**
-- admin / Admin@12345 ile giriş yapılamıyor
+**Symptom:**
+- Cannot login with admin / Admin@12345
 
-**Çözüm:**
+**Solution:**
 ```bash
-# Konteyner içine gir
-docker exec -it moodle-render_moodle_1 bash
+# Enter container
+docker exec -it moodle-lms_moodle_1 bash
 
-# Admin şifresini sıfırla
+# Reset admin password
 php admin/cli/reset_password.php --username=admin --password=NewPassword123!
 
-# Veya yeni admin kullanıcı oluştur
+# Or create new admin user
 php admin/cli/install_database.php --adminuser=newadmin --adminpass=NewPass123! --adminemail=admin@example.com
 ```
 
-### ❌ **Problem: Türkçe karakterler bozuk görünüyor**
+### ❌ **Problem: Special characters appear corrupted**
 
-**Belirti:**
-- Türkçe karakterler ? veya garip simgeler olarak görünüyor
+**Symptom:**
+- Special characters appear as ? or strange symbols
 
-**Çözüm:**
+**Solution:**
 ```bash
-# Veritabanı karakter setini kontrol et
-docker exec -it moodle-render_mariadb_1 mysql -u bn_moodle -pbitnami123 -e "
+# Check database character set
+docker exec -it moodle-lms_mariadb_1 mysql -u bn_moodle -pbitnami123 -e "
 SELECT DEFAULT_CHARACTER_SET_NAME, DEFAULT_COLLATION_NAME 
 FROM information_schema.SCHEMATA 
 WHERE SCHEMA_NAME='bitnami_moodle';"
 
-# UTF-8 character set ayarla
-docker exec -it moodle-render_mariadb_1 mysql -u bn_moodle -pbitnami123 -e "
+# Set UTF-8 character set
+docker exec -it moodle-lms_mariadb_1 mysql -u bn_moodle -pbitnami123 -e "
 ALTER DATABASE bitnami_moodle CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 ```
 
-### ❌ **Problem: File upload çalışmıyor**
+### ❌ **Problem: File upload not working**
 
-**Belirti:**
-- Dosya yükleme işlemleri başarısız oluyor
+**Symptom:**
+- File upload operations fail
 
-**Çözüm:**
+**Solution:**
 ```bash
-# Upload limitleri kontrol et
-docker exec moodle-render_moodle_1 php -i | grep -E "(upload_max_filesize|post_max_size|max_execution_time)"
+# Check upload limits
+docker exec moodle-lms_moodle_1 php -i | grep -E "(upload_max_filesize|post_max_size|max_execution_time)"
 
-# Moodle data dizin izinlerini kontrol et
-docker exec moodle-render_moodle_1 ls -la /bitnami/moodledata/
+# Check Moodle data directory permissions
+docker exec moodle-lms_moodle_1 ls -la /bitnami/moodledata/
 
-# İzinleri düzelt
-docker exec moodle-render_moodle_1 chown -R bitnami:bitnami /bitnami/moodledata/
-docker exec moodle-render_moodle_1 chmod -R 755 /bitnami/moodledata/
+# Fix permissions
+docker exec moodle-lms_moodle_1 chown -R bitnami:bitnami /bitnami/moodledata/
+docker exec moodle-lms_moodle_1 chmod -R 755 /bitnami/moodledata/
 ```
 
 ---
 
-## 💾 Veritabanı Sorunları
+## 💾 Database Issues
 
 ### ❌ **Problem: "Database connection failed"**
 
-**Belirti:**
+**Symptom:**
 ```
 Error: Database connection failed.
 It is possible that the database is overloaded or otherwise not running properly.
 ```
 
-**Çözüm:**
+**Solution:**
 ```bash
-# MariaDB konteyner durumunu kontrol et
+# Check MariaDB container status
 docker-compose ps mariadb
 
-# MariaDB loglarını kontrol et
+# Check MariaDB logs
 docker-compose logs mariadb
 
-# Database bağlantısını test et
-docker exec -it moodle-render_mariadb_1 mysql -u bn_moodle -pbitnami123 -e "SELECT 1;"
+# Test database connection
+docker exec -it moodle-lms_mariadb_1 mysql -u bn_moodle -pbitnami123 -e "SELECT 1;"
 
-# MariaDB yeniden başlat
+# Restart MariaDB
 docker-compose restart mariadb
 ```
 
-### ❌ **Problem: "Table doesn't exist" hataları**
+### ❌ **Problem: "Table doesn't exist" errors**
 
-**Belirti:**
+**Symptom:**
 ```
 ERROR 1146 (42S02): Table 'bitnami_moodle.mdl_config' doesn't exist
 ```
 
-**Çözüm:**
+**Solution:**
 ```bash
-# Database restore işlemi
-docker exec -it moodle-render_mariadb_1 mysql -u root -proot_password
+# Database restore process
+docker exec -it moodle-lms_mariadb_1 mysql -u root -proot_password
 
-# Database durumunu kontrol et
+# Check database status
 SHOW DATABASES;
 USE bitnami_moodle;
 SHOW TABLES;
 
-# Eğer tablolar yoksa, restore işlemi yap
-# Backup dosyanız varsa:
-cat backup.sql | docker exec -i moodle-render_mariadb_1 mysql -u bn_moodle -pbitnami123 bitnami_moodle
+# If tables are missing, perform restore
+# If you have a backup file:
+cat backup.sql | docker exec -i moodle-lms_mariadb_1 mysql -u bn_moodle -pbitnami123 bitnami_moodle
 ```
 
-### ❌ **Problem: Database corrupt hatası**
+### ❌ **Problem: Database corruption error**
 
-**Belirti:**
+**Symptom:**
 ```
 MySQL server has gone away
 Error reading from database
 ```
 
-**Çözüm:**
+**Solution:**
 ```bash
 # Database repair
-docker exec -it moodle-render_mariadb_1 mysqlcheck --repair --all-databases -u root -proot_password
+docker exec -it moodle-lms_mariadb_1 mysqlcheck --repair --all-databases -u root -proot_password
 
-# Tablo bazlı repair
-docker exec -it moodle-render_mariadb_1 mysql -u root -proot_password bitnami_moodle -e "
+# Table-based repair
+docker exec -it moodle-lms_mariadb_1 mysql -u root -proot_password bitnami_moodle -e "
 REPAIR TABLE mdl_sessions;
 REPAIR TABLE mdl_log;
 REPAIR TABLE mdl_config;
 "
 
-# İnnoDB recovery mode
-# my.cnf dosyasına ekle: innodb_force_recovery = 1
+# InnoDB recovery mode
+# Add to my.cnf file: innodb_force_recovery = 1
 ```
 
 ---
 
-## 🔌 Entegrasyon Sorunları
+## 🔌 Integration Issues
 
-### 📹 **BigBlueButton Sorunları**
+### 📹 **BigBlueButton Issues**
 
 **❌ Problem: "Unable to join meeting"**
 
 ```bash
-# BBB sunucu durumunu kontrol et
+# Check BBB server status
 curl -f "https://your-bbb-server.com/bigbluebutton/api"
 
-# Moodle config kontrolü
-docker exec moodle-render_moodle_1 grep -r "bigbluebutton" /opt/bitnami/moodle/config.php
+# Check Moodle config
+docker exec moodle-lms_moodle_1 grep -r "bigbluebutton" /opt/bitnami/moodle/config.php
 
-# API secret doğrulaması
-# config.php'deki secret ile BBB sunucusu secret'ının eşleşmesi gerekir
+# API secret verification
+# Secret in config.php must match BBB server secret
 ```
 
-**Çözüm:**
+**Solution:**
 ```php
-// config.php güncellemesi
+// config.php update
 $CFG->bigbluebuttonbn_server_url = 'https://correct-bbb-server.com/bigbluebutton/api/';
 $CFG->bigbluebuttonbn_shared_secret = 'correct_secret_key';
 ```
 
-### 🔍 **Examus Gözetim Sistemi Sorunları**
+### 🔍 **Examus Proctoring System Issues**
 
 **❌ Problem: "Unable to start proctoring session"**
 
 ```bash
-# Web service token kontrolü
-docker exec moodle-render_moodle_1 php -r "
+# Web service token check
+docker exec moodle-lms_moodle_1 php -r "
 require_once('/opt/bitnami/moodle/config.php');
 echo 'Token: ' . get_config('examus', 'token') . \"\n\";
 "
 
 # API endpoint test
-curl -X POST "http://your-domain.com/webservice/rest/server.php" \
+curl -X POST "http://example-domain.com/webservice/rest/server.php" \
   -d "wstoken=87b5bfe408e6dbe60c21f1630202c02d" \
   -d "wsfunction=core_user_get_users" \
   -d "moodlewsrestformat=json"
 ```
 
-### 🛡️ **Safe Exam Browser Sorunları**
+### 🛡️ **Safe Exam Browser Issues**
 
 **❌ Problem: "SEB not detected"**
 
 ```bash
-# SEB konfigürasyonu kontrol et
-docker exec moodle-render_moodle_1 find /opt/bitnami/moodle -name "*seb*" -type f
+# Check SEB configuration
+docker exec moodle-lms_moodle_1 find /opt/bitnami/moodle -name "*seb*" -type f
 
-# Config dosyası oluştur
-docker exec moodle-render_moodle_1 php admin/cli/cfg.php --name=seb_enabled --set=1
+# Create config file
+docker exec moodle-lms_moodle_1 php admin/cli/cfg.php --name=seb_enabled --set=1
 ```
 
 ---
 
-## ⚡ Performans Sorunları
+## ⚡ Performance Issues
 
-### ❌ **Problem: Yavaş sayfa yüklenme**
+### ❌ **Problem: Slow page loading**
 
-**Tanı:**
+**Diagnosis:**
 ```bash
-# Sistem kaynak kullanımı
+# System resource usage
 docker stats
 
-# Disk I/O kontrol
+# Disk I/O check
 iostat -x 1
 
-# Memory leak kontrolü
-docker exec moodle-render_moodle_1 php admin/cli/check_database_schema.php
+# Memory leak check
+docker exec moodle-lms_moodle_1 php admin/cli/check_database_schema.php
 ```
 
-**Çözümler:**
+**Solutions:**
 
-1. **Cache temizliği:**
+1. **Cache cleanup:**
 ```bash
-# Moodle cache temizle
-docker exec moodle-render_moodle_1 php admin/cli/purge_caches.php
+# Clear Moodle cache
+docker exec moodle-lms_moodle_1 php admin/cli/purge_caches.php
 
-# Browser cache temizle
-# Tarayıcıda Ctrl+Shift+R
+# Clear browser cache
+# Press Ctrl+Shift+R in browser
 ```
 
-2. **Database optimizasyonu:**
+2. **Database optimization:**
 ```bash
-# Database optimize et
-docker exec -it moodle-render_mariadb_1 mysqlcheck --optimize --all-databases -u root -proot_password
+# Optimize database
+docker exec -it moodle-lms_mariadb_1 mysqlcheck --optimize --all-databases -u root -proot_password
 
-# Slow query log etkinleştir
-docker exec -it moodle-render_mariadb_1 mysql -u root -proot_password -e "
+# Enable slow query log
+docker exec -it moodle-lms_mariadb_1 mysql -u root -proot_password -e "
 SET GLOBAL slow_query_log = 'ON';
 SET GLOBAL slow_query_log_file = '/var/log/mysql/slow.log';
 SET GLOBAL long_query_time = 2;
 "
 ```
 
-3. **Resource limits artır:**
+3. **Increase resource limits:**
 ```yaml
 # docker-compose.yml
 services:
@@ -457,193 +457,190 @@ services:
           cpus: '2.0'
 ```
 
-### ❌ **Problem: Yüksek CPU kullanımı**
+### ❌ **Problem: High CPU usage**
 
-**Tanı:**
+**Diagnosis:**
 ```bash
 # Top processes
-docker exec moodle-render_moodle_1 top
+docker exec moodle-lms_moodle_1 top
 
 # PHP processes
-docker exec moodle-render_moodle_1 ps aux | grep php
+docker exec moodle-lms_moodle_1 ps aux | grep php
 ```
 
-**Çözüm:**
+**Solution:**
 ```bash
-# PHP-FPM ayarları optimize et
-docker exec moodle-render_moodle_1 vi /opt/bitnami/php/etc/php-fpm.d/www.conf
+# Optimize PHP-FPM settings
+docker exec moodle-lms_moodle_1 vi /opt/bitnami/php/etc/php-fpm.d/www.conf
 
-# Cron job sıklığını azalt
-docker exec moodle-render_moodle_1 crontab -e
-# */15 yerine */30 dakika yap
+# Reduce cron job frequency
+docker exec moodle-lms_moodle_1 crontab -e
+# Use */30 instead of */15 minutes
 ```
 
 ---
 
-## 🔒 Güvenlik Sorunları
+## 🔒 Security Issues
 
-### ❌ **Problem: "Unauthorized access" uyarıları**
+### ❌ **Problem: "Unauthorized access" warnings**
 
-**Belirti:**
-- Log dosyalarında şüpheli aktivite
-- Bilinmeyen IP adreslerinden erişim
+**Symptoms:**
+- Suspicious activity in log files
+- Access from unknown IP addresses
 
-**Çözüm:**
+**Solution:**
 ```bash
-# IP whitelist ayarla
-docker exec moodle-render_moodle_1 php admin/cli/cfg.php --name=allowedips --set="192.168.1.0/24"
+# Configure IP whitelist
+docker exec moodle-lms_moodle_1 php admin/cli/cfg.php --name=allowedips --set="192.168.1.0/24"
 
-# Security headers ekle
-# Apache config dosyasına:
+# Add security headers (Apache config):
 Header always set X-Frame-Options DENY
 Header always set X-Content-Type-Options nosniff
 Header always set X-XSS-Protection "1; mode=block"
 ```
 
-### ❌ **Problem: SSL sertifikası sorunları**
+### ❌ **Problem: SSL certificate issues**
 
-**Belirti:**
-- "Not secure" uyarısı
-- Mixed content hataları
+**Symptoms:**
+- "Not secure" warning
+- Mixed content errors
 
-**Çözüm:**
+**Solution:**
 ```bash
-# Let's Encrypt sertifikası yenile
+# Renew Let's Encrypt certificate
 certbot renew --dry-run
 
-# Sertifika durumunu kontrol et
+# Check certificate status
 openssl x509 -in /etc/ssl/certs/certificate.crt -text -noout
 
-# Forced HTTPS aktifleştir
-docker exec moodle-render_moodle_1 php admin/cli/cfg.php --name=httpswwwroot --set="https://your-domain.com"
+# Enforce HTTPS
+docker exec moodle-lms_moodle_1 php admin/cli/cfg.php --name=httpswwwroot --set="https://your-domain.com"
 ```
 
 ---
 
-## 📊 Log Analizi
+## 📊 Log Analysis
 
-### 🔍 **Log Dosyası Konumları**
+### 🔍 **Log File Locations**
 
-| Servis | Log Dosyası | Konum |
-|--------|-------------|--------|
+| Service | Log File | Path |
 | **Moodle** | Error Log | `/opt/bitnami/moodle/error.log` |
 | **Apache** | Access Log | `/opt/bitnami/apache/logs/access_log` |
 | **MariaDB** | Error Log | `/opt/bitnami/mariadb/logs/mysqld.log` |
 | **Docker** | Container Log | `docker logs container-name` |
 
-### 📋 **Log Analiz Komutları**
+### 📋 **Log Analysis Commands**
 
 ```bash
-# Son 100 satır error log
-docker exec moodle-render_moodle_1 tail -n 100 /opt/bitnami/moodle/error.log
+# Last 100 lines of error log
+docker exec moodle-lms_moodle_1 tail -n 100 /opt/bitnami/moodle/error.log
 
-# Kritik hatalar filtrele
-docker logs moodle-render_moodle_1 2>&1 | grep -i "error\|fatal\|critical"
+# Filter critical errors
+docker logs moodle-lms_moodle_1 2>&1 | grep -i "error\|fatal\|critical"
 
-# Belirli tarih aralığı
-docker logs --since="2025-01-01T00:00:00" --until="2025-01-02T00:00:00" moodle-render_moodle_1
+# Specific time range
+docker logs --since="2025-01-01T00:00:00" --until="2025-01-02T00:00:00" moodle-lms_moodle_1
 
-# Log boyutunu kontrol et
-docker exec moodle-render_moodle_1 du -h /opt/bitnami/moodle/error.log
+# Check log size
+docker exec moodle-lms_moodle_1 du -h /opt/bitnami/moodle/error.log
 ```
 
-### 🔍 **Sık Görülen Log Hataları**
+### 🔍 **Common Log Errors**
 
-| Hata | Anlamı | Çözüm |
+| Error | Meaning | Solution |
 |------|--------|-------|
-| `Fatal error: Maximum execution time` | Script timeout | PHP max_execution_time artır |
-| `mysqli_connect(): Connection refused` | DB bağlantı sorunu | MariaDB konteyner kontrol et |
-| `File not found` | Eksik dosya | File permissions kontrol et |
-| `Out of memory` | Bellek yetersiz | Memory limit artır |
+| `Fatal error: Maximum execution time` | Script timeout | Increase PHP max_execution_time |
+| `mysqli_connect(): Connection refused` | DB connection issue | Check MariaDB container |
+| `File not found` | Missing file | Check file permissions |
+| `Out of memory` | Insufficient memory | Increase memory limit |
 
 ---
 
-## 🚨 Acil Durum Kurtarma
+## 🚨 Emergency Recovery
 
-### 💾 **Hızlı Backup**
+### 💾 **Quick Backup**
 
 ```bash
-# Tam sistem yedeği
+# Full system backup
 ./scripts/emergency-backup.sh
 
-# Manuel backup
-docker exec moodle-render_mariadb_1 mysqldump -u bn_moodle -pbitnami123 bitnami_moodle > emergency-backup.sql
-docker cp moodle-render_moodle_1:/bitnami/moodledata ./moodledata-backup
+# Manual backup
+docker exec moodle-lms_mariadb_1 mysqldump -u bn_moodle -pbitnami123 bitnami_moodle > emergency-backup.sql
+docker cp moodle-lms_moodle_1:/bitnami/moodledata ./moodledata-backup
 ```
 
-### 🔄 **Sistem Restore**
+### 🔄 **System Restore**
 
 ```bash
-# Konteynerları durdur
+# Stop containers
 docker-compose down
 
-# Volume'leri temizle
-docker volume rm moodle-render_mariadb_data moodle-render_moodledata_data
+# Remove volumes
+docker volume rm moodle-lms_mariadb_data moodle-lms_moodledata_data
 
-# Yeniden başlat
+# Restart
 docker-compose up -d
 
-# Database restore
-cat emergency-backup.sql | docker exec -i moodle-render_mariadb_1 mysql -u bn_moodle -pbitnami123 bitnami_moodle
+# Restore database
+cat emergency-backup.sql | docker exec -i moodle-lms_mariadb_1 mysql -u bn_moodle -pbitnami123 bitnami_moodle
 
-# Moodle data restore
-docker cp ./moodledata-backup/. moodle-render_moodle_1:/bitnami/moodledata/
+# Restore Moodle data
+docker cp ./moodledata-backup/. moodle-lms_moodle_1:/bitnami/moodledata/
 ```
 
-### 🆘 **Son Çare Komutları**
+### 🆘 **Last Resort Commands**
 
 ```bash
-# Tüm Docker verilerini temizle (DİKKAT!)
+# Remove all Docker data (CAUTION!)
 docker system prune -a --volumes
 
-# Tüm konteynerleri sil
+# Remove all containers
 docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
 
-# Baştan kurulum
+# Fresh setup
 git pull origin main
 docker-compose up -d --build --force-recreate
 ```
 
 ---
 
-## 🛟 Destek Alma
+## 🛟 Getting Support
 
-### 📞 **İletişim Kanalları**
+### 📞 **Contact Channels**
 
-| Acil Seviye | Kanal | Yanıt Süresi |
-|-------------|-------|--------------|
-| **🚨 Kritik** | Phone: +90 533 924 3850 | < 2 saat |
-| **⚠️ Yüksek** | Email: info@tuerfa.de | < 4 saat |
-| **🔵 Normal** | GitHub Issues | < 1 gün |
+| Priority | Channel | Response Time |
+| **🚨 Critical** | Phone: +1-555-0123 | < 2 hours |
+| **⚠️ High** | Email: support@example.com | < 4 hours |
+| **🔵 Normal** | GitHub Issues | < 1 day |
 
-### 📋 **Destek Talep Template**
+### 📋 **Support Request Template**
 
 ```markdown
-## 🚨 Sorun Açıklaması
-[Sorunu detaylı açıklayın]
+## 🚨 Issue Description
+[Describe the issue in detail]
 
-## 🔄 Reproduksiyon Adımları
-1. [Adım 1]
-2. [Adım 2]
-3. [Hata oluşur]
+## 🔄 Reproduction Steps
+1. [Step 1]
+2. [Step 2]
+3. [Error occurs]
 
-## 💻 Sistem Bilgileri
+## 💻 System Information
 - OS: [Ubuntu 20.04]
 - Docker Version: [20.10.12]
-- TurfaLearn Version: [2.1.0]
+- Moodle LMS Version: [2.1.0]
 
-## 📊 Log Çıktıları
+## 📊 Log Output
 ```bash
-[Log çıktıları buraya]
+[Paste log output here]
 ```
 
-## 🔍 Denenen Çözümler
-[Şimdiye kadar denediğiniz çözümler]
+## 🔍 Attempted Solutions
+[What you have tried so far]
 ```
 
 ---
 
-## 🧰 Yararlı Scriptler
+## 🧰 Useful Scripts
 
 ### 🔍 **System Health Check**
 
@@ -651,11 +648,11 @@ docker-compose up -d --build --force-recreate
 #!/bin/bash
 # health-check.sh
 
-echo "=== TurfaLearn Health Check ==="
+echo "=== Moodle LMS Health Check ==="
 echo "Date: $(date)"
 echo ""
 
-# Docker kontrolleri
+# Docker checks
 echo "🐳 Docker Services:"
 docker-compose ps | tail -n +3 | while read line; do
   echo "  - $line"
@@ -673,7 +670,7 @@ echo "🌐 Service Accessibility:"
 curl -s -f http://localhost:8080/login/index.php >/dev/null && echo "  - Moodle: ✅ OK" || echo "  - Moodle: ❌ FAIL"
 
 # Database connectivity
-docker exec moodle-render_mariadb_1 mysqladmin ping >/dev/null 2>&1 && echo "  - Database: ✅ OK" || echo "  - Database: ❌ FAIL"
+docker exec moodle-lms_mariadb_1 mysqladmin ping >/dev/null 2>&1 && echo "  - Database: ✅ OK" || echo "  - Database: ❌ FAIL"
 
 echo ""
 echo "=== Health Check Complete ==="
@@ -685,20 +682,20 @@ echo "=== Health Check Complete ==="
 #!/bin/bash
 # cleanup.sh
 
-echo "🧹 TurfaLearn Cleanup Starting..."
+echo "🧹 Moodle LMS Cleanup Starting..."
 
-# Log dosyası temizliği
+# Clean log files
 echo "📄 Cleaning logs..."
-docker exec moodle-render_moodle_1 find /opt/bitnami/apache/logs -name "*.log" -type f -mtime +7 -delete
-docker exec moodle-render_moodle_1 truncate -s 0 /opt/bitnami/moodle/error.log
+docker exec moodle-lms_moodle_1 find /opt/bitnami/apache/logs -name "*.log" -type f -mtime +7 -delete
+docker exec moodle-lms_moodle_1 truncate -s 0 /opt/bitnami/moodle/error.log
 
-# Cache temizliği
+# Clean cache
 echo "🗂️ Cleaning cache..."
-docker exec moodle-render_moodle_1 php admin/cli/purge_caches.php
+docker exec moodle-lms_moodle_1 php admin/cli/purge_caches.php
 
 # Temporary files
 echo "🗑️ Cleaning temp files..."
-docker exec moodle-render_moodle_1 find /tmp -type f -mtime +3 -delete
+docker exec moodle-lms_moodle_1 find /tmp -type f -mtime +3 -delete
 
 # Docker cleanup
 echo "🐳 Docker cleanup..."
@@ -711,18 +708,18 @@ echo "✅ Cleanup complete!"
 
 <div align="center">
 
-## 🎯 Hala Sorun Çözemediyseniz?
+## 🎯 Still need help?
 
-**Endişelenmeyin! Bizimle iletişime geçin:**
+**No worries! Contact us:**
 
-📧 **Email:** info@tuerfa.de  
-📱 **Telefon:** +90 0533 924 3850  
-🐛 **GitHub:** [Issues sayfası](https://github.com/umur957/moodle-render/issues)
+📧 **Email:** support@example.com  
+📱 **Phone:** +1-555-0123  
+🐛 **GitHub:** [Issues page](https://github.com/umur957/moodle-lms/issues)
 
 ---
 
-*Bu rehber düzenli olarak güncellenmektedir. Yeni sorunlar keşfettiğinizde lütfen bize bildirin!*
+*This guide is updated regularly. Please report new issues!*
 
-**© 2025 Turfa GbR • Made with ❤️ for the community**
+**© 2025 UMUR KIZILDAS • MIT License • Made with ❤️ for the community**
 
 </div>

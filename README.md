@@ -1,78 +1,77 @@
-# 🎓 TurfaLearn - Moodle LMS Docker Deployment
+# 🎓 Moodle LMS Docker Deployment
 
 <div align="center">
-  <img src="https://via.placeholder.com/150x150.png?text=TurfaLearn" alt="TurfaLearn Logo" width="120"/>
+  <img src="https://via.placeholder.com/150x150.png?text=Moodle+LMS" alt="Moodle LMS Logo" width="120"/>
   
   ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
   ![Moodle](https://img.shields.io/badge/Moodle-FF6600?style=flat-square&logo=moodle&logoColor=white)
   ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=flat-square&logo=mariadb&logoColor=white)
-  ![Turkish](https://img.shields.io/badge/Lang-Turkish-red?style=flat-square)
-  ![German](https://img.shields.io/badge/Lang-German-yellow?style=flat-square)
+  ![Multi-Language](https://img.shields.io/badge/Lang-Multi-blue?style=flat-square)
   ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
   
-  <h3>Kapsamlı E-Learning Platformu</h3>
-  <p><em>Güvenli • Ölçeklenebilir • Çoklu Dil Destekli</em></p>
+  <h3>Comprehensive E-Learning Platform</h3>
+  <p><em>Secure • Scalable • Multi-Language Support</em></p>
 </div>
 
 ---
 
-## 🌟 Proje Hakkında
+## 🌟 About the Project
 
-TurfaLearn, eğitim kurumları için özel olarak tasarlanmış, **Moodle LMS** altyapısı üzerine inşa edilmiş kapsamlı bir öğrenme yönetim sistemi çözümüdür. Docker konteyner teknolojisi kullanılarak modüler bir yapıda geliştirilmiş olan bu sistem, **BigBlueButton**, **Examus gözetim sistemi** ve **Safe Exam Browser** entegrasyonları ile güvenli ve etkileşimli e-learning deneyimi sunar.
+Moodle LMS is a comprehensive learning management system solution specially designed for educational institutions, built on **Moodle LMS** infrastructure. Developed in a modular structure using Docker container technology, this system offers a secure and interactive e-learning experience with **BigBlueButton**, **Examus proctoring system**, and **Safe Exam Browser** integrations.
 
-### 🎯 **Hedef Kitle**
-- 🏫 Dil Okulları ve Kursları
-- 🎓 Özel Eğitim Kurumları  
-- 🏛️ Yüksek Öğrenim Kurumları
-- 🏢 Kurumsal Eğitim Departmanları
-- 🏛️ Belediyeler ve Kamu Kurumları
+### 🎯 **Target Audience**
+- 🏫 Language Schools and Courses
+- 🎓 Private Educational Institutions  
+- 🏛️ Higher Education Institutions
+- 🏢 Corporate Training Departments
+- 🏛️ Municipalities and Public Institutions
 
 ---
 
-## 🚀 Temel Özellikler
+## 🚀 Key Features
 
 <table>
 <tr>
 <td width="50%">
 
-### 📚 **Eğitim Yönetimi**
-- ✅ Tek komutla kurulum
-- ✅ Kapsamlı kurs yönetimi
-- ✅ Çoklu dil desteği (TR/DE/EN)
-- ✅ Etkileşimli içerik desteği
-- ✅ İlerleme takip sistemi
+### 📚 **Education Management**
+- ✅ One-command installation
+- ✅ Comprehensive course management
+- ✅ Multi-language support (TR/DE/EN)
+- ✅ Interactive content support
+- ✅ Progress tracking system
 
 </td>
 <td width="50%">
 
-### 🔒 **Güvenlik & Sınav**
-- ✅ Examus gözetim sistemi
-- ✅ Safe Exam Browser entegrasyonu
-- ✅ Güvenli sınav ortamı
-- ✅ Kimlik doğrulama sistemi
-- ✅ GDPR uyumlu veri koruması
+### 🔒 **Security & Examination**
+- ✅ Examus proctoring system
+- ✅ Safe Exam Browser integration
+- ✅ Secure examination environment
+- ✅ Identity verification system
+- ✅ GDPR compliant data protection
 
 </td>
 </tr>
 <tr>
 <td width="50%">
 
-### 💻 **Teknik Altyapı**
+### 💻 **Technical Infrastructure**
 - ✅ Docker & Docker Compose
-- ✅ MariaDB veritabanı
-- ✅ Bitnami optimizasyonu
-- ✅ Persistent veri depolama
-- ✅ SSL/HTTPS desteği
+- ✅ MariaDB database
+- ✅ Bitnami optimization
+- ✅ Persistent data storage
+- ✅ SSL/HTTPS support
 
 </td>
 <td width="50%">
 
-### 🌐 **Entegrasyonlar**
-- ✅ BigBlueButton (Video Konferans)
-- ✅ Odoo ERP entegrasyonu
-- ✅ Gitpod desteği
-- ✅ API tabanlı entegrasyonlar
-- ✅ Webhook desteği
+### 🌐 **Integrations**
+- ✅ BigBlueButton (Video Conferencing)
+- ✅ Odoo ERP integration
+- ✅ Gitpod support
+- ✅ API-based integrations
+- ✅ Webhook support
 
 </td>
 </tr>
@@ -80,184 +79,184 @@ TurfaLearn, eğitim kurumları için özel olarak tasarlanmış, **Moodle LMS** 
 
 ---
 
-## 📋 Sistem Gereksinimleri
+## 📋 System Requirements
 
-| Bileşen | Minimum | Önerilen |
+| Component | Minimum | Recommended |
 |---------|---------|----------|
-| **İşletim Sistemi** | Ubuntu 20.04+ | Ubuntu 24.04 LTS |
+| **Operating System** | Ubuntu 20.04+ | Ubuntu 24.04 LTS |
 | **RAM** | 2GB | 4GB+ |
-| **Disk Alanı** | 10GB | 20GB+ |
+| **Disk Space** | 10GB | 20GB+ |
 | **Docker Engine** | 20.10+ | Latest |
 | **Docker Compose** | v2.0+ | Latest |
 | **CPU** | 2 Core | 4+ Core |
-| **Ağ** | 100Mbps | 1Gbps |
+| **Network** | 100Mbps | 1Gbps |
 
 ---
 
-## ⚡ Hızlı Kurulum
+## ⚡ Quick Installation
 
-### 🐳 **Docker Compose ile Kurulum (Önerilen)**
+### 🐳 **Installation with Docker Compose (Recommended)**
 
 ```bash
-# 1. Repoyu klonlayın
-[git clone https://github.com/umur957/moodle-render.git](https://github.com/umur957/turfalearn-lms)
-cd turfalearn-lms
+# 1. Clone the repository
+git clone https://github.com/umur957/moodle-lms.git
+cd moodle-lms
 
-# 2. Servisleri başlatın
+# 2. Start the services
 docker-compose up -d
 
-# 3. Kurulum tamamlandığında erişin
-echo "🌐 TurfaLearn hazır: http://localhost:8080"
+# 3. Access when installation is complete
+echo "🌐 Moodle LMS ready: http://localhost:8080"
 ```
 
-### 🔐 **İlk Erişim Bilgileri**
+### 🔐 **Initial Access Credentials**
 
-| Bilgi | Değer |
+| Information | Value |
 |-------|--------|
 | **🌐 URL** | `http://localhost:8080` |
-| **👤 Admin Kullanıcı** | `admin` |
-| **🔑 Admin Şifre** | `Admin@12345` |
+| **👤 Admin User** | `admin` |
+| **🔑 Admin Password** | `Admin@12345` |
 | **📧 Admin Email** | `admin@example.com` |
-| **🏫 Site Adı** | `Turfa Learn` |
+| **🏫 Site Name** | `Moodle LMS` |
 
-### ☁️ **Gitpod ile Kurulum**
+### ☁️ **Installation with Gitpod**
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/umur957/moodle-render)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/umur957/moodle-lms)
 
 ---
 
-## 🔧 Gelişmiş Konfigürasyon
+## 🔧 Advanced Configuration
 
-### 🌍 **Ortam Değişkenleri**
+### 🌍 **Environment Variables**
 
 ```yaml
-# docker-compose.yml içindeki önemli ayarlar
+# Important settings in docker-compose.yml
 environment:
-  - MOODLE_SITE_NAME=TurfaLearn          # Site adı
-  - MOODLE_USERNAME=admin                 # Admin kullanıcı adı
-  - MOODLE_PASSWORD=Admin@12345          # Admin şifresi (değiştirin!)
-  - MOODLE_EMAIL=admin@tuerfa.de         # Admin email
-  - MARIADB_PASSWORD=bitnami123          # DB şifresi (değiştirin!)
-  - MOODLE_SKIP_BOOTSTRAP=no             # İlk kurulum
+  - MOODLE_SITE_NAME=Moodle LMS          # Site name
+  - MOODLE_USERNAME=admin                 # Admin username
+  - MOODLE_PASSWORD=Admin@12345          # Admin password (change it!)
+  - MOODLE_EMAIL=admin@example.com       # Admin email
+  - MARIADB_PASSWORD=bitnami123          # DB password (change it!)
+  - MOODLE_SKIP_BOOTSTRAP=no             # Initial setup
 ```
 
-### 🌐 **Port Yapılandırması**
+### 🌐 **Port Configuration**
 
-| Port | Protokol | Açıklama |
+| Port | Protocol | Description |
 |------|----------|----------|
-| **8080** | HTTP | Ana web erişimi |
-| **8443** | HTTPS | Güvenli web erişimi |
-| **3306** | MySQL | Veritabanı erişimi (internal) |
+| **8080** | HTTP | Main web access |
+| **8443** | HTTPS | Secure web access |
+| **3306** | MySQL | Database access (internal) |
 
-### 🔐 **SSL/HTTPS Yapılandırması**
+### 🔐 **SSL/HTTPS Configuration**
 
 ```bash
-# Production için SSL sertifikası
-# Let's Encrypt ile otomatik sertifika
+# SSL certificate for production
+# Automatic certificate with Let's Encrypt
 certbot --docker -d your-domain.com
 ```
 
 ---
 
-## 📂 Proje Yapısı
+## 📂 Project Structure
 
 ```
-moodle-render/
+moodle-lms/
 ├── 📄 docker-compose.yml      # Docker orchestration
-├── 📄 gitpod.yaml            # Gitpod konfigürasyonu  
-├── 📄 start.sh               # Başlatma scripti
-├── 📄 README.md              # Bu dokümantasyon
-├── 📄 CHANGELOG.md           # Versiyon notları
-├── 📄 CONTRIBUTING.md        # Katkı rehberi
+├── 📄 gitpod.yaml            # Gitpod configuration  
+├── 📄 start.sh               # Startup script
+├── 📄 README.md              # This documentation
+├── 📄 CHANGELOG.md           # Version notes
+├── 📄 CONTRIBUTING.md        # Contribution guide
 ├── 📄 .gitattributes         # Git attributes
-└── 📁 docs/                  # Detaylı dokümantasyon
-    ├── 📄 installation.md    # Kurulum rehberi
-    ├── 📄 configuration.md   # Yapılandırma
-    ├── 📄 integrations.md    # Entegrasyonlar
-    └── 📄 troubleshooting.md # Sorun giderme
+└── 📁 docs/                  # Detailed documentation
+    ├── 📄 installation.md    # Installation guide
+    ├── 📄 configuration.md   # Configuration
+    ├── 📄 integrations.md    # Integrations
+    └── 📄 troubleshooting.md # Troubleshooting
 ```
 
 ---
 
-## 🛠️ Yönetim Komutları
+## 🛠️ Management Commands
 
 <details>
-<summary><b>📋 Temel Docker Komutları</b></summary>
+<summary><b>📋 Basic Docker Commands</b></summary>
 
 ```bash
-# Servisleri başlat
+# Start services
 docker-compose up -d
 
-# Servisleri durdur  
+# Stop services  
 docker-compose down
 
-# Logları görüntüle
+# View logs
 docker-compose logs -f moodle
 
-# Veritabanına bağlan
-docker exec -it moodle-render_mariadb_1 mysql -u bn_moodle -pbitnami123
+# Connect to database
+docker exec -it moodle-lms_mariadb_1 mysql -u bn_moodle -pbitnami123
 
-# Moodle container'ına gir
-docker exec -it moodle-render_moodle_1 bash
+# Enter Moodle container
+docker exec -it moodle-lms_moodle_1 bash
 
-# Sistem temizliği (veriler dahil - DİKKAT!)
+# System cleanup (including data - CAUTION!)
 docker-compose down -v
 docker system prune -a
 ```
 </details>
 
 <details>
-<summary><b>🔄 Yedekleme ve Geri Yükleme</b></summary>
+<summary><b>🔄 Backup and Restore</b></summary>
 
 ```bash
-# Veritabanı yedeği al
-docker exec moodle-render_mariadb_1 mysqldump -u bn_moodle -pbitnami123 bitnami_moodle > backup.sql
+# Take database backup
+docker exec moodle-lms_mariadb_1 mysqldump -u bn_moodle -pbitnami123 bitnami_moodle > backup.sql
 
-# Veritabanını geri yükle
-cat backup.sql | docker exec -i moodle-render_mariadb_1 mysql -u bn_moodle -pbitnami123 bitnami_moodle
+# Restore database
+cat backup.sql | docker exec -i moodle-lms_mariadb_1 mysql -u bn_moodle -pbitnami123 bitnami_moodle
 
-# Volume verilerini yedekle
-docker run --rm -v moodle-render_moodledata_data:/data -v $(pwd):/backup alpine tar czf /backup/moodledata.tar.gz -C /data .
+# Backup volume data
+docker run --rm -v moodle-lms_moodledata_data:/data -v $(pwd):/backup alpine tar czf /backup/moodledata.tar.gz -C /data .
 ```
 </details>
 
 <details>
-<summary><b>🔧 Sistem İzleme</b></summary>
+<summary><b>🔧 System Monitoring</b></summary>
 
 ```bash
-# Sistem durumu
+# System status
 docker-compose ps
 
-# Kaynak kullanımı
+# Resource usage
 docker stats
 
-# Disk kullanımı
+# Disk usage
 docker system df
 
-# Sağlık kontrolü
+# Health check
 curl -f http://localhost:8080/login/index.php || echo "Service down!"
 ```
 </details>
 
 ---
 
-## 🌟 Entegre Sistemler
+## 🌟 Integrated Systems
 
-### 📹 **BigBlueButton - Canlı Video Konferans**
+### 📹 **BigBlueButton - Live Video Conferencing**
 
 <div align="center">
   <img src="https://bigbluebutton.org/wp-content/uploads/2021/01/bigbluebutton-logo.png" alt="BigBlueButton" width="200"/>
 </div>
 
-**Özellikler:**
-- 🎥 HD video konferans
-- 🖥️ Ekran paylaşımı  
-- ✏️ İnteraktif beyaz tahta
-- 📹 Oturum kaydetme
-- 👥 Küçük grup odaları
-- 📊 Anlık anketler
+**Features:**
+- 🎥 HD video conferencing
+- 🖥️ Screen sharing  
+- ✏️ Interactive whiteboard
+- 📹 Session recording
+- 👥 Breakout rooms
+- 📊 Real-time polls
 
-**Yapılandırma:**
+**Configuration:**
 ```php
 // Moodle config.php
 $CFG->bigbluebuttonbn_server_url = 'https://your-bbb-server.com/bigbluebutton/api/';
@@ -266,21 +265,21 @@ $CFG->bigbluebuttonbn_shared_secret = 'your_secret_key';
 
 ---
 
-### 🔍 **Examus - Gözetim Sistemi**
+### 🔍 **Examus - Proctoring System**
 
 <div align="center">
   <img src="https://via.placeholder.com/200x80.png?text=Examus" alt="Examus" width="200"/>
 </div>
 
-**Özellikler:**
-- 👤 Yüz tanıma teknolojisi
-- 📹 Sürekli video izleme  
-- 🔍 Şüpheli davranış algılama
-- 🎯 Kimlik doğrulama
-- 📊 Detaylı raporlama
-- 🤖 AI destekli analiz
+**Features:**
+- 👤 Facial recognition technology
+- 📹 Continuous video monitoring  
+- 🔍 Suspicious behavior detection
+- 🎯 Identity verification
+- 📊 Detailed reporting
+- 🤖 AI-powered analysis
 
-**API Yapılandırması:**
+**API Configuration:**
 ```
 🔑 Token: 87b5bfe408e6dbe60c21f1630202c02d
 🌐 API URL: http://your-domain.com/webservice/rest/server.php
@@ -294,27 +293,27 @@ $CFG->bigbluebuttonbn_shared_secret = 'your_secret_key';
   <img src="https://via.placeholder.com/200x80.png?text=Safe+Exam+Browser" alt="SEB" width="200"/>
 </div>
 
-**Özellikler:**
-- 🔒 Güvenli sınav ortamı
-- 🚫 Diğer uygulamalara erişim engelleme
-- 📋 Kopyala-yapıştır engelleme  
-- 📸 Ekran yakalama koruması
-- ⌨️ Kısayol tuşları devre dışı
-- 🔐 Kiosk modu
+**Features:**
+- 🔒 Secure examination environment
+- 🚫 Block access to other applications
+- 📋 Disable copy-paste  
+- 📸 Screen capture protection
+- ⌨️ Disable shortcut keys
+- 🔐 Kiosk mode
 
 ---
 
-### 🏢 **Odoo ERP Entegrasyonu**
+### 🏢 **Odoo ERP Integration**
 
-**Senkronizasyon Özellikleri:**
-- 👥 Kullanıcı senkronizasyonu
-- 📚 Kurs ve içerik aktarımı
-- 📊 İlerleme raporları
-- 💰 Faturalama entegrasyonu
-- 📈 Analitik veriler
+**Synchronization Features:**
+- 👥 User synchronization
+- 📚 Course and content transfer
+- 📊 Progress reports
+- 💰 Billing integration
+- 📈 Analytics data
 
 ```python
-# Odoo tarafında API çağrısı örneği
+# Example API call from Odoo side
 import requests
 
 moodle_api = {
@@ -323,7 +322,7 @@ moodle_api = {
     'format': 'json'
 }
 
-# Kurs listesi alma
+# Get course list
 response = requests.get(moodle_api['url'], params={
     'wstoken': moodle_api['token'],
     'wsfunction': 'core_course_get_courses',
@@ -333,225 +332,222 @@ response = requests.get(moodle_api['url'], params={
 
 ---
 
-## 🔒 Güvenlik Özellikleri
+## 🔒 Security Features
 
-### 🛡️ **Sınav Güvenliği**
-- **Multi-layer Protection:** SEB + Examus + Moodle güvenlik
-- **Biometric Verification:** Yüz tanıma ve kimlik doğrulama  
-- **Real-time Monitoring:** Anlık gözetim ve uyarı sistemi
-- **Session Recording:** Tam oturum kaydı ve analizi
-- **IP Restrictions:** IP bazlı erişim kontrolü
+### 🛡️ **Exam Security**
+- **Multi-layer Protection:** SEB + Examus + Moodle security
+- **Biometric Verification:** Facial recognition and identity verification  
+- **Real-time Monitoring:** Real-time surveillance and alert system
+- **Session Recording:** Full session recording and analysis
+- **IP Restrictions:** IP-based access control
 
-### 🔐 **Veri Güvenliği**  
-- **Encryption:** End-to-end şifreleme
-- **GDPR Compliance:** Avrupa veri koruma uyumluluğu
-- **Regular Backups:** Otomatik yedekleme sistemi
-- **Access Control:** Rol bazlı erişim yönetimi
-- **Audit Trails:** Detaylı denetim kayıtları
+### 🔐 **Data Security**  
+- **Encryption:** End-to-end encryption
+- **GDPR Compliance:** European data protection compliance
+- **Regular Backups:** Automated backup system
+- **Access Control:** Role-based access management
+- **Audit Trails:** Detailed audit logs
 
-### 🌐 **Ağ Güvenliği**
-- **SSL/TLS:** HTTPS zorunlu kullanım
-- **Firewall Integration:** Ağ seviyesi koruma
-- **DDoS Protection:** Saldırı önleme sistemi
-- **Rate Limiting:** API kullanım sınırları
-- **VPN Support:** Kurumsal VPN entegrasyonu
-
----
-
-## 📈 Kullanım Senaryoları
-
-<details>
-<summary><b>🗣️ Dil Kursları</b></summary>
-
-**Akış:**
-1. 📝 Öğrenciler seviye belirleme sınavına katılır
-2. 🎯 Otomatik seviye gruplandırması  
-3. 📅 Haftalık canlı dersler (BigBlueButton)
-4. ✍️ Etkileşimli alıştırmalar ve ödevler
-5. 🔍 Gözetimli sınavlar (Examus)
-6. 📊 İlerleme takibi ve sertifikalandırma
-
-**Özel Özellikler:**
-- 🎧 Ses kayıt ve değerlendirme modülleri
-- 🗣️ Telaffuz analizi araçları
-- 📱 Mobil uygulama desteği
-- 🌍 Çoklu dil arayüzü
-</details>
-
-<details>
-<summary><b>🏢 Kurumsal Eğitim</b></summary>
-
-**Akış:**
-1. 👥 Çalışanların Odoo'dan otomatik aktarımı
-2. 🏬 Departmana özel içerik ataması
-3. 📚 Self-paced öğrenme modülleri  
-4. ✅ Yeterlilik değerlendirme sınavları
-5. 🏆 Tamamlama sertifikaları
-6. 📈 İlerleme raporlarının ERP'ye entegrasyonu
-
-**ROI Metrikleri:**
-- ⏱️ Eğitim süresinde %40 azalma
-- 💰 Eğitim maliyetlerinde %60 tasarruf
-- 📊 Çalışan memnuniyetinde %85 artış
-</details>
-
-<details>
-<summary><b>🎓 Yüksek Öğrenim</b></summary>
-
-**Akış:**
-1. 📋 Otomatik öğrenci kaydı ve ders seçimi
-2. 📖 Ders materyallerinin dijital dağıtımı
-3. 💬 Forum ve tartışma alanları
-4. 🤝 Grup projeleri ve işbirlikleri  
-5. 📝 Çevrimiçi sınavlar ve değerlendirmeler
-6. 📊 Akademik ilerleme raporlaması
-
-**Ölçeklenebilirlik:**
-- 👥 10,000+ eşzamanlı kullanıcı desteği
-- 📚 Sınırsız kurs ve içerik kapasitesi
-- 🌍 Multi-campus desteği
-</details>
+### 🌐 **Network Security**
+- **SSL/TLS:** Mandatory HTTPS usage
+- **Firewall Integration:** Network-level protection
+- **DDoS Protection:** Attack prevention system
+- **Rate Limiting:** API usage limits
+- **VPN Support:** Corporate VPN integration
 
 ---
 
-## 🎨 Özelleştirme ve Branding
+## 📈 Use Cases
 
-### 🎨 **Tema Özelleştirme**
+<details>
+<summary><b>🗣️ Language Courses</b></summary>
+
+**Flow:**
+1. 📝 Students take level placement test
+2. 🎯 Automatic level grouping  
+3. 📅 Weekly live classes (BigBlueButton)
+4. ✍️ Interactive exercises and assignments
+5. 🔍 Proctored exams (Examus)
+6. 📊 Progress tracking and certification
+
+**Special Features:**
+- 🎧 Audio recording and evaluation modules
+- 🗣️ Pronunciation analysis tools
+- 📱 Mobile app support
+- 🌍 Multi-language interface
+</details>
+
+<details>
+<summary><b>🏢 Corporate Training</b></summary>
+
+**Flow:**
+1. 👥 Automatic employee transfer from Odoo
+2. 🏬 Department-specific content assignment
+3. 📚 Self-paced learning modules  
+4. ✅ Competency assessment exams
+5. 🏆 Completion certificates
+6. 📈 Progress report integration to ERP
+
+**ROI Metrics:**
+- ⏱️ 40% reduction in training time
+- 💰 60% savings in training costs
+- 📊 85% increase in employee satisfaction
+</details>
+
+<details>
+<summary><b>🎓 Higher Education</b></summary>
+
+**Flow:**
+1. 📋 Automatic student enrollment and course selection
+2. 📖 Digital distribution of course materials
+3. 💬 Forums and discussion areas
+4. 🤝 Group projects and collaborations  
+5. 📝 Online exams and assessments
+6. 📊 Academic progress reporting
+
+**Scalability:**
+- 👥 10,000+ concurrent user support
+- 📚 Unlimited course and content capacity
+- 🌍 Multi-campus support
+</details>
+
+---
+
+## 🎨 Customization and Branding
+
+### 🎨 **Theme Customization**
 ```css
-/* Kurumsal renkler */
+/* Corporate colors */
 :root {
   --primary-color: #your-brand-color;
   --secondary-color: #your-secondary-color;
   --accent-color: #your-accent-color;
 }
 
-/* Logo değiştirme */
+/* Logo change */
 .navbar-brand img {
   content: url('/path/to/your/logo.png');
   max-height: 50px;
 }
 ```
 
-### 🏢 **White Label Çözümü**
-- Tamamen özelleştirilebilir arayüz
-- Kendi domain ve SSL sertifikanız
-- Kurumsal logo ve renk şeması
-- Özel email şablonları
-- Markanıza özel mobil uygulama
+### 🏢 **White Label Solution**
+- Fully customizable interface
+- Your own domain and SSL certificate
+- Corporate logo and color scheme
+- Custom email templates
+- Brand-specific mobile application
 
 ---
 
-## 📊 Performans ve İstatistikler
+## 📊 Performance and Statistics
 
-### ⚡ **Benchmark Sonuçları**
+### ⚡ **Benchmark Results**
 
-| Metrik | Değer | Benchmark |
+| Metric | Value | Benchmark |
 |--------|--------|-----------|
-| **Sayfa Yükleme** | <2s | Industry: 3-5s |
-| **Eşzamanlı Kullanıcı** | 1000+ | Tested: 1500 |
+| **Page Load** | <2s | Industry: 3-5s |
+| **Concurrent Users** | 1000+ | Tested: 1500 |
 | **Uptime** | 99.9% | Target: 99.5% |
 | **API Response** | <100ms | Industry: 200ms |
 | **Database Query** | <50ms | Optimized |
 
-### 📈 **Ölçeklenebilirlik**
-- **Horizontal Scaling:** Multi-node deployment desteği
-- **Load Balancing:** Nginx/HAProxy entegrasyonu  
-- **Caching:** Redis/Memcached desteği
+### 📈 **Scalability**
+- **Horizontal Scaling:** Multi-node deployment support
+- **Load Balancing:** Nginx/HAProxy integration  
+- **Caching:** Redis/Memcached support
 - **CDN Integration:** Global content delivery
-- **Auto-scaling:** Kubernetes deployment hazır
+- **Auto-scaling:** Kubernetes deployment ready
 
 ---
 
-## 🚨 Sorun Giderme
+## 🚨 Troubleshooting
 
 <details>
-<summary><b>❌ Sık Karşılaşılan Sorunlar</b></summary>
+<summary><b>❌ Common Issues</b></summary>
 
-### **Giriş Sorunları**
+### **Login Issues**
 ```bash
-# Çözüm 1: Konteyner durumunu kontrol et
+# Solution 1: Check container status
 docker-compose ps
 
-# Çözüm 2: Logları incele  
+# Solution 2: Check logs  
 docker-compose logs moodle
 
-# Çözüm 3: Servis yeniden başlatma
+# Solution 3: Restart service
 docker-compose restart moodle
 ```
 
-### **Performans Sorunları**
+### **Performance Issues**
 ```bash
-# Bellek kullanımını kontrol et
+# Check memory usage
 docker stats
 
-# Cache temizliği
-docker exec moodle-render_moodle_1 php admin/cli/purge_caches.php
+# Cache cleanup
+docker exec moodle-lms_moodle_1 php admin/cli/purge_caches.php
 
-# Database optimizasyonu
-docker exec moodle-render_mariadb_1 mysqlcheck --optimize --all-databases -u root -p
+# Database optimization
+docker exec moodle-lms_mariadb_1 mysqlcheck --optimize --all-databases -u root -p
 ```
 
-### **Bağlantı Sorunları**  
+### **Connection Issues**  
 ```bash
-# Network durumunu kontrol et
+# Check network status
 docker network ls
-docker network inspect moodle-render_default
+docker network inspect moodle-lms_default
 
-# Port kontrolü
+# Port check
 netstat -tulpn | grep :8080
 ```
 </details>
 
 ---
 
-## 🤝 Katkıda Bulunma
+## 🤝 Contributing
 
-TurfaLearn açık kaynak projesi olarak geliştirilmektedir. Katkılarınız memnuniyetle karşılanır!
+Moodle LMS is developed by UMUR KIZILDAS as an MIT-licensed open source project. Your contributions are welcome!
 
-### 📝 **Nasıl Katkıda Bulunabilirsiniz?**
+### 📝 **How Can You Contribute?**
 
-1. **🍴 Fork** edin
-2. **🌿 Branch** oluşturun (`git checkout -b feature/amazing-feature`)
-3. **💾 Commit** edin (`git commit -m 'Add amazing feature'`)
-4. **📤 Push** edin (`git push origin feature/amazing-feature`)  
-5. **📬 Pull Request** açın
+1. **🍴 Fork** the project
+2. **🌿 Create Branch** (`git checkout -b feature/amazing-feature`)
+3. **💾 Commit** (`git commit -m 'Add amazing feature'`)
+4. **📤 Push** (`git push origin feature/amazing-feature`)  
+5. **📬 Open Pull Request**
 
 ### 🐛 **Bug Report & Feature Request**
-- [Issues sayfasından](https://github.com/umur957/moodle-render/issues) bildirin
-- Detaylı açıklama ve reproduksiyon adımları ekleyin
-- Ekran görüntüleri ekleyin (varsa)
+- Report from [Issues page](https://github.com/umur957/moodle-lms/issues)
+- Add detailed description and reproduction steps
+- Add screenshots (if any)
 
 ### 📋 **Development Guidelines**
-- Kod standardlarına uyun
-- Test yazın ve mevcut testlerin geçtiğinden emin olun  
-- Dokümantasyonu güncelleyin
-- Commit mesajlarında [Conventional Commits](https://conventionalcommits.org/) kullanın
+- Follow code standards
+- Write tests and ensure existing tests pass  
+- Update documentation
+- Use [Conventional Commits](https://conventionalcommits.org/) in commit messages
 
 ---
 
-## 📄 Lisans
+## 📄 License
 
-Bu proje **MIT Lisansı** altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakınız.
+This project is licensed under the **MIT License**. See [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🆘 Destek ve İletişim
+## 🆘 Support and Contact
 
 <div align="center">
 
-### 📞 **İletişim Bilgileri**
+### 📞 **Contact Information**
 
-| Kanal | Bilgi |
+| Channel | Information |
 |-------|-------|
-| 🌐 **Website** | [www.tuerfa.de](http://www.tuerfa.de) |
-| 📧 **Email** | info@tuerfa.de |  
-| 📱 **Telefon** | +90 0533 924 3850 |
-| 💬 **Support** | [Issues](https://github.com/umur957/moodle-render/issues) |
-| 📚 **Dokümantasyon** | [docs/](./docs/) |
+| 💬 **Support** | [Issues](https://github.com/umur957/moodle-lms/issues) |
+| 📚 **Documentation** | [docs/](./docs/) |
 
-### 🕐 **Destek Saatleri**
-**Pazartesi - Cuma:** 09:00 - 18:00 (GMT+3)  
-**Acil Durumlar:** 7/24 (email üzerinden)
+### 🕐 **Support Hours**
+**Monday - Friday:** 09:00 - 18:00 (GMT+3)  
+**Emergencies:** 24/7 (via email)
 
 </div>
 
@@ -559,19 +555,19 @@ Bu proje **MIT Lisansı** altında lisanslanmıştır. Detaylar için [LICENSE](
 
 <div align="center">
   
-## ⭐ **Projeyi Beğendiyseniz Star Vermeyi Unutmayın!**
+## ⭐ **Don't Forget to Star the Project if You Like It!**
 
-[![GitHub stars](https://img.shields.io/github/stars/umur957/moodle-render?style=social)](https://github.com/umur957/moodle-render/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/umur957/moodle-render?style=social)](https://github.com/umur957/moodle-render/network)
-[![GitHub issues](https://img.shields.io/github/issues/umur957/moodle-render?style=social)](https://github.com/umur957/moodle-render/issues)
-
----
-
-**Geliştirici:** [@umur957](https://github.com/umur957) • **Turfa GbR** 🚀  
-*Dijital eğitimde yenilikçi çözümler sunan bir Alman teknoloji şirketi*
+[![GitHub stars](https://img.shields.io/github/stars/umur957/moodle-lms?style=social)](https://github.com/umur957/moodle-lms/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/umur957/moodle-lms?style=social)](https://github.com/umur957/moodle-lms/network)
+[![GitHub issues](https://img.shields.io/github/issues/umur957/moodle-lms?style=social)](https://github.com/umur957/moodle-lms/issues)
 
 ---
 
-*© 2025 Turfa GbR. Tüm hakları saklıdır. • Made with ❤️ in Germany & Turkey*
+**Developer:** UMUR KIZILDAS ([@umur957](https://github.com/umur957)) 🚀  
+MIT-licensed open source Moodle LMS project
+
+---
+
+*© 2025 UMUR KIZILDAS. MIT License. Made with ❤️ for Education*
 
 </div>
