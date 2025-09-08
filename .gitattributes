@@ -1,0 +1,5 @@
+# Language detection
+*.sh linguist-language=Shell
+*.yml linguist-language=YAML
+*.yaml linguist-language=YAML
+*.md linguist-documentation

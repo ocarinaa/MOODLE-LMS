@@ -1,31 +1,16 @@
 #!/bin/bash
 
-# MySQL'i başlat
-service mysql start
+# Docker Compose servisleri başlat
+docker-compose up -d
 
-# Moodle veritabanı oluştur
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS moodle DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-mysql -u root -e "CREATE USER IF NOT EXISTS 'moodle'@'localhost' IDENTIFIED BY 'moodle123';"
-mysql -u root -e "GRANT ALL ON moodle.* TO 'moodle'@'localhost';"
+# Servislerin hazır olmasını bekle
+echo "⏳ Moodle başlatılıyor..."
+sleep 30
 
-# Config.php dosyasını oluştur
-cat > /var/www/html/moodle/config.php << EOF
-<?php
-\$CFG = new stdClass();
-\$CFG->dbtype    = 'mysqli';
-\$CFG->dblibrary = 'native';
-\$CFG->dbhost    = 'localhost';
-\$CFG->dbname    = 'moodle';
-\$CFG->dbuser    = 'moodle';
-\$CFG->dbpass    = 'moodle123';
-\$CFG->prefix    = 'mdl_';
-\$CFG->dboptions = array('dbpersist' => false, 'dbsocket' => false);
-\$CFG->wwwroot   = 'https://'.\$_SERVER['HTTP_HOST'];
-\$CFG->dataroot  = '/var/www/moodledata';
-\$CFG->directorypermissions = 0777;
-\$CFG->admin = 'admin';
-require_once(__DIR__ . '/lib/setup.php');
-EOF
+# Status kontrolü
+docker-compose ps
 
-# Apache'yi başlat
-apache2-foreground
+echo "✅ Moodle hazır!"
+echo "🌐 Erişim adresi: http://localhost:8080"
+echo "👤 Kullanıcı: admin"
+echo "🔑 Şifre: Admin@12345"
