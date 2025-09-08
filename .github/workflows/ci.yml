@@ -1,0 +1,179 @@
+﻿name:  Moodle LMS CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Test weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+jobs:
+  test-deployment:
+    name:  Test Docker Deployment
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name:  Checkout Code
+      uses: actions/checkout@v4
+      
+    - name:  Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name:  Validate Docker Compose
+      run: |
+        echo " Validating docker-compose.yml syntax..."
+        docker-compose config
+        
+    - name:  Start Services
+      run: |
+        echo " Starting Moodle LMS containers..."
+        docker-compose up -d
+        
+    - name:  Wait for Services
+      run: |
+        echo " Waiting for services to initialize..."
+        sleep 30
+        
+        echo " Checking container status..."
+        docker-compose ps
+        
+        echo " Checking MariaDB logs..."
+        docker-compose logs mariadb --tail=10
+        
+    - name:  Health Check
+      run: |
+        echo " Performing health checks..."
+        
+        # Wait for MariaDB to be ready
+        echo " Waiting for MariaDB..."
+        timeout 300 bash -c 'until docker-compose exec -T mariadb mysqladmin ping -h localhost --silent; do sleep 5; done'
+        
+        # Wait for Moodle to be ready (max 10 minutes)
+        echo " Waiting for Moodle..."
+        timeout 600 bash -c 'until curl -f http://localhost:8080 > /dev/null 2>&1; do sleep 10; done'
+        
+    - name:  Test HTTP Access
+      run: |
+        echo " Testing HTTP access..."
+        
+        # Test HTTP response
+        HTTP_STATUS=\
+        echo "HTTP Status: \"
+        
+        if [ \ -eq 200 ]; then
+          echo " HTTP test passed!"
+        else
+          echo " HTTP test failed with status: \"
+          exit 1
+        fi
+        
+        # Test if Moodle content is served
+        if curl -s http://localhost:8080 | grep -q "Moodle"; then
+          echo " Moodle content detected!"
+        else
+          echo " Moodle content not found!"
+          exit 1
+        fi
+        
+    - name:  System Information
+      if: always()
+      run: |
+        echo " System Information:"
+        echo "Docker version: \Docker version 27.5.1, build 9f9e405"
+        echo "Docker Compose version: \Docker Compose version v2.32.4-desktop.1"
+        echo "Available memory: \"
+        echo "Available disk: \"
+        
+        echo " Container Status:"
+        docker-compose ps
+        
+        echo " Container Stats:"
+        docker stats --no-stream
+        
+    - name:  Show Logs on Failure
+      if: failure()
+      run: |
+        echo " Moodle Logs:"
+        docker-compose logs moodle --tail=50
+        
+        echo " MariaDB Logs:"
+        docker-compose logs mariadb --tail=50
+        
+    - name:  Cleanup
+      if: always()
+      run: |
+        echo " Cleaning up..."
+        docker-compose down -v
+        docker system prune -f
+
+  security-scan:
+    name:  Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name:  Checkout Code
+      uses: actions/checkout@v4
+      
+    - name:  Run Trivy Security Scan
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        
+    - name:  Upload Trivy Results
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  documentation:
+    name:  Check Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name:  Checkout Code
+      uses: actions/checkout@v4
+      
+    - name:  Validate README
+      run: |
+        echo " Checking README.md..."
+        if [ ! -f README.md ]; then
+          echo " README.md not found!"
+          exit 1
+        fi
+        
+        # Check for required sections
+        required_sections=("Quick Start" "Prerequisites" "Configuration" "Troubleshooting")
+        for section in "\"; do
+          if ! grep -q "\" README.md; then
+            echo " Missing section: \"
+            exit 1
+          fi
+        done
+        
+        echo " README.md validation passed!"
+        
+    - name:  Validate Docker Compose
+      run: |
+        echo " Checking docker-compose.yml..."
+        
+        # Check for required services
+        if ! grep -q "mariadb:" docker-compose.yml; then
+          echo " MariaDB service not found!"
+          exit 1
+        fi
+        
+        if ! grep -q "moodle:" docker-compose.yml; then
+          echo " Moodle service not found!"
+          exit 1
+        fi
+        
+        echo " Docker Compose validation passed!"
